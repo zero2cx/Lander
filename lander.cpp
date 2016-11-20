@@ -8,6 +8,10 @@
 #include <fcntl.h>
 #include <time.h>
 
+
+int consoleGraph = 1;
+
+
 int kbhit(void){
 	struct termios oldt, newt;
 	int ch;
@@ -101,8 +105,6 @@ int main(){
 
 			mvprintw(w.ws_row - 3,startPoint,"A");
 
-
-			int consoleGraph = 1;
 			if ( consoleGraph == 1 ){
 				mvprintw(0,4,"lines %d\n", w.ws_row);
 				mvprintw(1,4,"columns %d\n", w.ws_col);
@@ -116,6 +118,14 @@ int main(){
 				}
 			}
 			refresh();
+		}
+
+
+		mvprintw(rockstart,17,"X");
+
+		for (int i = 0; i < w.ws_row; ++i){		// BORDERS
+			mvprintw(i,3,"|");
+			mvprintw(i,w.ws_col - 3,"|");
 		}
 
 		key = localGetch();
@@ -137,6 +147,19 @@ int main(){
 			continue;
 		}
 		
+		if ( consoleGraph == 1 ){
+			mvprintw(0,4,"lines %d\n", w.ws_row);
+			mvprintw(1,4,"columns %d\n", w.ws_col);
+			mvprintw(2,4,"Cursor at x:%i", startPoint);
+			mvprintw(3,4,"Rock y:%i", rockstart);
+			mvprintw(4,4,"Loops %i", loops);
+			if (kbhit()){
+				mvprintw(5,4,"kbhit is at 1");
+			} else{
+				mvprintw(5,4,"kbhit is at 0");
+			}
+		}
+
 		refresh();
 	}
 	endwin();
