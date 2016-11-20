@@ -4,12 +4,10 @@
 #include <unistd.h>
 #include <thread>
 #include <stdio.h>
+#include <stdlib.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <time.h>
-
-
-int consoleGraph = 1;
 
 
 int kbhit(void){
@@ -52,6 +50,12 @@ int main(){
 	int startPoint = 15;
 	int rockstart = 0;
 	int loops = 0;
+	int consoleGraph = 1;
+	int randomXn = 15;
+	int newRock = 0;
+	int randomX[1];
+
+	int wtf = 0;
 
 
 	struct winsize w;
@@ -73,14 +77,22 @@ int main(){
 			clear();
 			
 			if ( rockstart > w.ws_row ){
+				++wtf;
 				rockstart = 0;
+				newRock = 1;
 			}
 
 			if (kbhit()){
 				key = localGetch();
 				break;
 			}
-			mvprintw(rockstart,17,"X");
+
+			if ( newRock == 1 );{
+				randomXn = 3 + (rand() % (int)((w.ws_col - 6 ) - 3 + 1));
+				randomX[1] = randomXn;
+				newRock = 0;
+			}
+			mvprintw(rockstart,randomX[1],"X");
 			++rockstart;				// END ROCK
 
 			if (kbhit()){
@@ -113,20 +125,22 @@ int main(){
 				mvprintw(0,4,"lines %d\n", w.ws_row);
 				mvprintw(1,4,"columns %d\n", w.ws_col);
 				mvprintw(2,4,"Cursor at x:%i", startPoint);
-				mvprintw(3,4,"Rock y:%i", rockstart);
+				mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomX[1]);
 				mvprintw(4,4,"Loops %i", loops);
 				if (kbhit()){
 					mvprintw(5,4,"kbhit is at 1");
 				} else{
 					mvprintw(5,4,"kbhit is at 0");
 				}
+				mvprintw(6,4,"newRock val:%i",newRock);
+				mvprintw(7,4,"wtf:%i", wtf);
 			}
 			refresh();
 		}
 		
 		clear();
 
-		mvprintw(rockstart,17,"X");
+		mvprintw(rockstart,randomX[1],"X");
 
 		for (int i = 0; i < w.ws_row; ++i){		// BORDERS
 			mvprintw(i,3,"|");
@@ -156,13 +170,15 @@ int main(){
 			mvprintw(0,4,"lines %d\n", w.ws_row);
 			mvprintw(1,4,"columns %d\n", w.ws_col);
 			mvprintw(2,4,"Cursor at x:%i", startPoint);
-			mvprintw(3,4,"Rock y:%i", rockstart);
+			mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomX[1]);
 			mvprintw(4,4,"Loops %i", loops);
 			if (kbhit()){
 				mvprintw(5,4,"kbhit is at 1");
 			} else{
 				mvprintw(5,4,"kbhit is at 0");
 			}
+			mvprintw(6,4,"newRock val:%i",newRock);
+			mvprintw(7,4,"wtf:%i", wtf);
 		}
 
 		refresh();
