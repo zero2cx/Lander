@@ -1,0 +1,1 @@
+g++ hello2.cpp -lncurses -std=c++11 -pthread
