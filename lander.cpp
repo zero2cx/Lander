@@ -71,13 +71,32 @@ int main(){
 			if ( rockstart > w.ws_row ){
 				rockstart = 0;
 			}
+
+			if (kbhit()){
+				break;
+			}
 			mvprintw(rockstart,17,"X");
 			++rockstart;				// END ROCK
-			sleep_ms(500);
+
+			if (kbhit()){
+				break;
+			}
+
+			sleep_ms(50);
+
+			if (kbhit()){
+				break;
+			}
+
 			++loops;
+
 			for (int i = 0; i < w.ws_row; ++i){		// BORDERS
 				mvprintw(i,3,"|");
 				mvprintw(i,w.ws_col - 3,"|");
+			}
+
+			if (kbhit()){
+				break;
 			}
 
 			mvprintw(w.ws_row - 3,startPoint,"A");
