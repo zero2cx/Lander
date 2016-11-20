@@ -77,18 +77,21 @@ int main(){
 			}
 
 			if (kbhit()){
+				key = localGetch();
 				break;
 			}
 			mvprintw(rockstart,17,"X");
 			++rockstart;				// END ROCK
 
 			if (kbhit()){
+				key = localGetch();
 				break;
 			}
 
 			sleep_ms(50);
 
 			if (kbhit()){
+				key = localGetch();
 				break;
 			}
 
@@ -100,10 +103,11 @@ int main(){
 			}
 
 			if (kbhit()){
+				key = localGetch();
 				break;
 			}
 
-			mvprintw(w.ws_row - 3,startPoint,"A");
+			mvprintw(w.ws_row - 3,startPoint,"/A\\");
 
 			if ( consoleGraph == 1 ){
 				mvprintw(0,4,"lines %d\n", w.ws_row);
@@ -119,7 +123,8 @@ int main(){
 			}
 			refresh();
 		}
-
+		
+		clear();
 
 		mvprintw(rockstart,17,"X");
 
@@ -128,20 +133,20 @@ int main(){
 			mvprintw(i,w.ws_col - 3,"|");
 		}
 
-		key = localGetch();
+		
 		if ( key == 'z' ){
 			if ( startPoint == 4 ){
 				continue;
 			} else{
 				startPoint = startPoint - 1;
-				mvprintw(w.ws_row - 3,startPoint,"A");
+				mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			}
 		} else if ( key == 'x' ){
 			if ( startPoint == w.ws_col - 4 ){
 				continue;			
 			} else{
 				startPoint = startPoint + 1;
-				mvprintw(w.ws_row - 3,startPoint,"A");
+				mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			}
 		} else {
 			continue;
