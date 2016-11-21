@@ -133,7 +133,7 @@ int main(){
 				mvprintw(7,4,"wtf:%i", wtf);
 				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
 			}
-			if ( (startPoint == randomXn) && (rockstart == w.ws_row - 3) ){
+			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
 				goto GOVER;
 			}
 			refresh();
@@ -183,7 +183,7 @@ int main(){
 			mvprintw(8,4,"kbhit ch:%i", chKBHIT);
 		}
 
-		if ( (startPoint == randomXn) && (rockstart == w.ws_row - 3) ){
+		if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
 			goto GOVER;
 		}
 
