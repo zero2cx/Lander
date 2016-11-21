@@ -36,8 +36,7 @@ void sleep_ms(int milliseconds){
 
 
 int main(){
-
-
+	auto start_time = std::chrono::high_resolution_clock::now();
 	initscr();
 	curs_set(0);
 	int startPoint = 15;
@@ -102,6 +101,8 @@ int main(){
 				mvprintw(6,4,"newRock val:%i",newRock);
 				mvprintw(7,4,"wtf:%i", wtf);
 				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
+				auto current_time = std::chrono::high_resolution_clock::now();
+				mvprintw(0, w.ws_col - 12, "Time:%i", std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count());
 			}
 			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
 				goto GOVER;
