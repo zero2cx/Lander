@@ -1,4 +1,3 @@
-#include "headers/getch.h"
 #include <ncurses.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
