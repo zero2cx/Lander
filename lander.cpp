@@ -86,6 +86,30 @@ int main(){
 				randomXn = rand()%(w.ws_col - 6)+3;
 				newRock = 0;
 			}
+			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
+				mvprintw(i,3,"|");
+				mvprintw(i,w.ws_col - 3,"|");
+			}
+			if ( consoleGraph == 1 ){
+				mvprintw(0,4,"lines %d\n", w.ws_row);
+				mvprintw(1,4,"columns %d\n", w.ws_col);
+				mvprintw(2,4,"Cursor at x:%i", startPoint);
+				mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomXn);
+				mvprintw(4,4,"Loops %i", loops);
+				if (kbhit()){
+					mvprintw(5,4,"kbhit is at 1");
+				} else{
+					mvprintw(5,4,"kbhit is at 0");
+				}
+				mvprintw(6,4,"newRock val:%i",newRock);
+				mvprintw(7,4,"wtf:%i", wtf);
+				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
+			}
+			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
+				goto GOVER;
+			}
+			refresh();
+			mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			mvprintw(rockstart,randomXn,"X");
 			++rockstart;                // END ROCK
 
@@ -137,7 +161,6 @@ int main(){
 		}
 
 		clear();
-
 		mvprintw(rockstart,randomXn,"X");
 
 		for (int i = 0; i < w.ws_row; ++i){     // BORDERS
