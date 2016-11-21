@@ -52,6 +52,8 @@ int main(){
 	int randomXn = rand()%(w.ws_col - 7)+4;
 	int newRock = 0;
 	int wtf = 0;
+	int shoot = 0;
+	int shootMove = w.ws_row-4;
 
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -102,9 +104,19 @@ int main(){
 				mvprintw(6,4,"newRock val:%i",newRock);
 				mvprintw(7,4,"wtf:%i", wtf);
 				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
+				mvprintw(9,4,"show at %i", shootMove);
 			}
 			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
 				goto GOVER;
+			}
+			if ( shoot == 1 ){
+				int shootFix = startPoint+1;
+				mvprintw(shootMove,shootFix,"*");
+				--shootMove;
+				if ( shootMove == 0 ){
+					shoot = 0;
+					shootMove = w.ws_row-4;
+				}
 			}
 			refresh();
 			mvprintw(w.ws_row - 3,startPoint,"/A\\");
@@ -161,6 +173,8 @@ int main(){
 				startPoint = startPoint + 1;
 				mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			}
+		} else if ( key == 'c' ){
+			shoot = 1;
 		} else {
 			continue;
 		}
@@ -179,6 +193,7 @@ int main(){
 			mvprintw(6,4,"newRock val:%i",newRock);
 			mvprintw(7,4,"wtf:%i", wtf);
 			mvprintw(8,4,"kbhit ch:%i", chKBHIT);
+			mvprintw(9,4,"show at %i", shootMove);
 		}
 
 		if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
