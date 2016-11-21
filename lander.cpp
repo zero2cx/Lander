@@ -9,10 +9,10 @@
 #include <fcntl.h>
 #include <time.h>
 
+int chKBHIT;
 
 int kbhit(void){
 	struct termios oldt, newt;
-	int ch;
 	int oldf;
 	tcgetattr(STDIN_FILENO, &oldt);
 	newt = oldt;
@@ -20,10 +20,10 @@ int kbhit(void){
 	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 	oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
 	fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-	ch = getchar();
+	chKBHIT = getchar();
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 	fcntl(STDIN_FILENO, F_SETFL, oldf);
-	if(ch != EOF){
+	if(chKBHIT != EOF){
 		// ungetc(ch, stdin);
 		return 1;
 	}
@@ -131,6 +131,10 @@ int main(){
 				}
 				mvprintw(6,4,"newRock val:%i",newRock);
 				mvprintw(7,4,"wtf:%i", wtf);
+				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
+			}
+			if ( (startPoint == randomXn) && (rockstart == w.ws_row - 3) ){
+				goto GOVER;
 			}
 			refresh();
 		}
@@ -176,10 +180,20 @@ int main(){
 			}
 			mvprintw(6,4,"newRock val:%i",newRock);
 			mvprintw(7,4,"wtf:%i", wtf);
+			mvprintw(8,4,"kbhit ch:%i", chKBHIT);
+		}
+
+		if ( (startPoint == randomXn) && (rockstart == w.ws_row - 3) ){
+			goto GOVER;
 		}
 
 		refresh();
 	}
+	GOVER:refresh();
+	clear();
+	mvprintw(0,10,"GAME OVER");
+	refresh();
+	localGetch();
 	endwin();
 	return 0;
 }
