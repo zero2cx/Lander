@@ -120,7 +120,7 @@ int main(){
 				--shoot_Y;
 				if ( shoot_Y == 0 ){
 					shoot = false;
-					shoot_Y = w.ws_row-4;
+					shoot_Y = -1;
 				}
 			}
 			refresh();
