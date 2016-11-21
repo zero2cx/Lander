@@ -11,23 +11,16 @@
 
 int chKBHIT;
 
-int kbhit(void){
-	struct termios oldt, newt;
-	int oldf;
-	tcgetattr(STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~(ICANON | ECHO);
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-	oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-	fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-	chKBHIT = getchar();
-	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-	fcntl(STDIN_FILENO, F_SETFL, oldf);
-	if(chKBHIT != EOF){
-		// ungetc(ch, stdin);
+int kbhit(void)
+{
+	int ch = getch();
+
+	if (ch != ERR) {
+		ungetch(ch);
 		return 1;
+	} else {
+		return 0;
 	}
-	return 0;
 }
 
 void sleep_ms(int milliseconds){
@@ -56,11 +49,15 @@ int main(){
 
 	int wtf = 0;
 
+	//cbreak();
+	//noecho();
+	nodelay(stdscr, TRUE);
+	//scrollok(stdscr, TRUE);
 
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	printw("lines %d", w.ws_row);
-	printw("columns %d", w.ws_col);
+	//printw("lines %d", w.ws_row);
+	//printw("columns %d", w.ws_col);
 	while(true) {
 		char key;
 		struct winsize w;
@@ -69,7 +66,7 @@ int main(){
 		clear();
 
 
-		while( ! kbhit() ){
+		while( 1 ){
 
 			clear();
 
@@ -80,7 +77,7 @@ int main(){
 			}
 
 			if (kbhit()){
-				key = localGetch();
+				key = getch();
 				break;
 			}
 
@@ -93,14 +90,14 @@ int main(){
 			++rockstart;                // END ROCK
 
 			if (kbhit()){
-				key = localGetch();
+				key = getch();
 				break;
 			}
 
 			sleep_ms(50);
 
 			if (kbhit()){
-				key = localGetch();
+				key = getch();
 				break;
 			}
 
@@ -112,7 +109,7 @@ int main(){
 			}
 
 			if (kbhit()){
-				key = localGetch();
+				key = getch();
 				break;
 			}
 
