@@ -88,7 +88,9 @@ int main(){
 			}
 
 			if ( newRock == 1 );{
-				randomXn = 3 + (rand() % (int)((w.ws_col - 6 ) - 3 + 1));
+				// randomXn = 3 + (rand() % (int)((w.ws_col - 6 ) - 3 + 1));
+				srand(time(0));
+				randomXn = rand()%w.ws_col+3;
 				randomX[1] = randomXn;
 				newRock = 0;
 			}
