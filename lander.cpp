@@ -40,8 +40,8 @@ int main(){
 
 	initscr();
 	curs_set(0);
-	int startPoint = 15;
-	int rockstart = 0;
+	int ship_X = 15;
+	int rock_Y = 0;
 	int loops = 0;
 	int consoleGraph = 1;
 	int chKBHIT;
@@ -49,10 +49,10 @@ int main(){
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 	clear();
-	int randomXn = rand()%(w.ws_col - 7)+4;
-	int newRock = 0;
+	int rock_X = rand()%(w.ws_col - 7)+4;
+	int needsRock = 0;
 	int wtf = 0;
-	int shoot = 0;
+	bool shoot = 0;
 	int shoot_X = -1;
 	int shoot_Y = -1;
 
@@ -71,16 +71,16 @@ int main(){
 
 			clear();
 
-			if ( rockstart > w.ws_row ){
+			if ( rock_Y > w.ws_row ){
 				++wtf;
-				rockstart = 0;
-				newRock = 1;
+				rock_Y = 0;
+				needsRock = 1;
 			}
-			if ( rockstart == shoot_Y && randomXn == shoot_X ){
+			if ( rock_Y == shoot_Y && rock_X == shoot_X ){
 				++wtf;
-				rockstart = 0;
-				newRock = 1;
-				shoot = 0;
+				rock_Y = 0;
+				needsRock = 1;
+				shoot = false;
 				shoot_X = -1;
 				shoot_Y - 1;
 			}
@@ -90,10 +90,10 @@ int main(){
 				break;
 			}
 
-			if ( newRock == 1 ) {
+			if ( needsRock == 1 ) {
 				srand(time(0));
-				randomXn = rand()%(w.ws_col - 7)+4;
-				newRock = 0;
+				rock_X = rand()%(w.ws_col - 7)+4;
+				needsRock = 0;
 			}
 			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
 				mvprintw(i,3,"|");
@@ -102,35 +102,35 @@ int main(){
 			if ( consoleGraph == 1 ){
 				mvprintw(0,4,"lines %d\n", w.ws_row);
 				mvprintw(1,4,"columns %d\n", w.ws_col);
-				mvprintw(2,4,"Cursor at x:%i", startPoint);
-				mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomXn);
+				mvprintw(2,4,"Cursor at x:%i", ship_X);
+				mvprintw(3,4,"Rock y:%i x:%i", rock_Y, rock_X);
 				mvprintw(4,4,"Loops %i", loops);
 				if (kbhit()){
 					mvprintw(5,4,"kbhit is at 1");
 				} else{
 					mvprintw(5,4,"kbhit is at 0");
 				}
-				mvprintw(6,4,"newRock val:%i",newRock);
+				mvprintw(6,4,"needsRock val:%i",needsRock);
 				mvprintw(7,4,"wtf:%i", wtf);
 				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
 				mvprintw(9,4,"show at %i", shoot_Y);
 			}
-			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
+			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
 				goto GOVER;
 			}
-			if ( shoot == 1 ){
+			if (shoot){
 				int shootFix = 1;
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
 				if ( shoot_Y == 0 ){
-					shoot = 0;
+					shoot = false;
 					shoot_Y = w.ws_row-4;
 				}
 			}
 			refresh();
-			mvprintw(w.ws_row - 3,startPoint,"/A\\");
-			mvprintw(rockstart,randomXn,"X");
-			++rockstart;                // END ROCK
+			mvprintw(w.ws_row - 3,ship_X,"/A\\");
+			mvprintw(rock_Y,rock_X,"X");
+			++rock_Y;                // END ROCK
 
 			if (kbhit()){
 				key = getch();
@@ -151,16 +151,16 @@ int main(){
 				break;
 			}
 
-			mvprintw(w.ws_row - 3,startPoint,"/A\\");
+			mvprintw(w.ws_row - 3,ship_X,"/A\\");
 
-			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
+			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
 				goto GOVER;
 			}
 			refresh();
 		}
 
 		clear();
-		mvprintw(rockstart,randomXn,"X");
+		mvprintw(rock_Y,rock_X,"X");
 
 		for (int i = 0; i < w.ws_row; ++i){     // BORDERS
 			mvprintw(i,3,"|");
@@ -169,22 +169,22 @@ int main(){
 
 
 		if ( key == 'z' ){
-			if ( startPoint == 4 ){
+			if ( ship_X == 4 ){
 				continue;
 			} else{
-				startPoint = startPoint - 1;
-				mvprintw(w.ws_row - 3,startPoint,"/A\\");
+				ship_X = ship_X - 1;
+				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
 		} else if ( key == 'c' ){
-			if ( startPoint == w.ws_col - 6 ){
+			if ( ship_X == w.ws_col - 6 ){
 				continue;
 			} else{
-				startPoint = startPoint + 1;
-				mvprintw(w.ws_row - 3,startPoint,"/A\\");
+				ship_X = ship_X + 1;
+				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
-		} else if ( key == 'x' ){
-			shoot = 1;
-			shoot_X = startPoint;
+		} else if ( key == 'x'  && !shoot){
+			shoot = true;
+			shoot_X = ship_X;
 			shoot_Y = w.ws_row-4;;
 		} else {
 			continue;
@@ -193,21 +193,21 @@ int main(){
 		if ( consoleGraph == 1 ){
 			mvprintw(0,4,"lines %d\n", w.ws_row);
 			mvprintw(1,4,"columns %d\n", w.ws_col);
-			mvprintw(2,4,"Cursor at x:%i", startPoint);
-			mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomXn);
+			mvprintw(2,4,"Cursor at x:%i", ship_X);
+			mvprintw(3,4,"Rock y:%i x:%i", rock_Y, rock_X);
 			mvprintw(4,4,"Loops %i", loops);
 			if (kbhit()){
 				mvprintw(5,4,"kbhit is at 1");
 			} else{
 				mvprintw(5,4,"kbhit is at 0");
 			}
-			mvprintw(6,4,"newRock val:%i",newRock);
+			mvprintw(6,4,"needsRock val:%i",needsRock);
 			mvprintw(7,4,"wtf:%i", wtf);
 			mvprintw(8,4,"kbhit ch:%i", chKBHIT);
 			mvprintw(9,4,"show at %i", shoot_Y);
 		}
 
-		if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
+		if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
 			goto GOVER;
 		}
 
