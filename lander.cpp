@@ -44,7 +44,11 @@ int main(){
 	int rockstart = 0;
 	int loops = 0;
 	int consoleGraph = 1;
-	int randomXn = 15;
+	srand(time(0));
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
+	clear();
+	int randomXn = rand()%(w.ws_col - 6)+3;
 	int newRock = 0;
 
 	int wtf = 0;
@@ -54,7 +58,6 @@ int main(){
 	nodelay(stdscr, TRUE);
 	//scrollok(stdscr, TRUE);
 
-	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	//printw("lines %d", w.ws_row);
 	//printw("columns %d", w.ws_col);
