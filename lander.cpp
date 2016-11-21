@@ -9,10 +9,8 @@
 #include <fcntl.h>
 #include <time.h>
 
-int chKBHIT;
 
-int kbhit(void)
-{
+int kbhit(void){
 	int ch = getch();
 
 	if (ch != ERR) {
@@ -22,6 +20,7 @@ int kbhit(void)
 		return 0;
 	}
 }
+
 
 void sleep_ms(int milliseconds){
 #ifdef WIN32
@@ -36,7 +35,9 @@ void sleep_ms(int milliseconds){
 #endif
 }
 
+
 int main(){
+
 
 	initscr();
 	curs_set(0);
@@ -44,23 +45,20 @@ int main(){
 	int rockstart = 0;
 	int loops = 0;
 	int consoleGraph = 1;
+	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 	clear();
 	int randomXn = rand()%(w.ws_col - 6)+3;
 	int newRock = 0;
-
 	int wtf = 0;
 
-	//cbreak();
-	//noecho();
-	nodelay(stdscr, TRUE);
-	//scrollok(stdscr, TRUE);
 
+	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	//printw("lines %d", w.ws_row);
-	//printw("columns %d", w.ws_col);
+
+
 	while(true) {
 		char key;
 		struct winsize w;
@@ -69,7 +67,7 @@ int main(){
 		clear();
 
 
-		while( 1 ){
+		while( true ){
 
 			clear();
 
@@ -130,11 +128,6 @@ int main(){
 
 			++loops;
 
-			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
-				mvprintw(i,3,"|");
-				mvprintw(i,w.ws_col - 3,"|");
-			}
-
 			if (kbhit()){
 				key = getch();
 				break;
@@ -142,21 +135,6 @@ int main(){
 
 			mvprintw(w.ws_row - 3,startPoint,"/A\\");
 
-			if ( consoleGraph == 1 ){
-				mvprintw(0,4,"lines %d\n", w.ws_row);
-				mvprintw(1,4,"columns %d\n", w.ws_col);
-				mvprintw(2,4,"Cursor at x:%i", startPoint);
-				mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomXn);
-				mvprintw(4,4,"Loops %i", loops);
-				if (kbhit()){
-					mvprintw(5,4,"kbhit is at 1");
-				} else{
-					mvprintw(5,4,"kbhit is at 0");
-				}
-				mvprintw(6,4,"newRock val:%i",newRock);
-				mvprintw(7,4,"wtf:%i", wtf);
-				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
-			}
 			if ( (startPoint == randomXn || startPoint + 1 == randomXn || startPoint + 2 == randomXn) && (rockstart == w.ws_row - 3) ){
 				goto GOVER;
 			}
@@ -214,7 +192,7 @@ int main(){
 	}
 	GOVER:refresh();
 	clear();
-	mvprintw(0,10,"GAME OVER");
+	mvprintw(10,10,"GAME OVER");
 	refresh();
 	localGetch();
 	endwin();
