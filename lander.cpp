@@ -54,7 +54,7 @@ int main(){
 	int wtf = 0;
 	int shoot = 0;
 	int shoot_X = -1;
-	int shoot_Y = w.ws_row-4;
+	int shoot_Y = -1;
 
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -80,6 +80,9 @@ int main(){
 				++wtf;
 				rockstart = 0;
 				newRock = 1;
+				shoot = 0;
+				shoot_X = -1;
+				shoot_Y - 1;
 			}
 
 			if (kbhit()){
@@ -134,7 +137,7 @@ int main(){
 				break;
 			}
 
-			sleep_ms(160);
+			sleep_ms(50);
 
 			if (kbhit()){
 				key = getch();
@@ -182,6 +185,7 @@ int main(){
 		} else if ( key == 'x' ){
 			shoot = 1;
 			shoot_X = startPoint;
+			shoot_Y = w.ws_row-4;;
 		} else {
 			continue;
 		}
