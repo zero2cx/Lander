@@ -7,7 +7,7 @@ Lander is a top-down shooter made in C++
 
 ##TODO
 * Center "Game Over" screen
-* Fix the right border when the console is active
+* ~~Fix the right border when the console is active~~
 * Create a new console style with useful info
 * Add more Rocks
 * Add powerups (relentizer, etc.)
