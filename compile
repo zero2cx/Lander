@@ -1,1 +1,1 @@
-g++ hello2.cpp -lncurses -std=c++11 -pthread
+g++ lander.cpp -lncurses -std=c++11 -pthread
