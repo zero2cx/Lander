@@ -193,7 +193,7 @@ int main(){
 	clear();
 	mvprintw(10,10,"GAME OVER");
 	refresh();
-	localGetch();
+	getch();
 	endwin();
 	return 0;
 }
