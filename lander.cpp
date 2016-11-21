@@ -53,7 +53,6 @@ int main(){
 	int consoleGraph = 1;
 	int randomXn = 15;
 	int newRock = 0;
-	int randomX[1];
 
 	int wtf = 0;
 
@@ -62,20 +61,18 @@ int main(){
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	printw("lines %d", w.ws_row);
 	printw("columns %d", w.ws_col);
-
-
-	while(true){
+	while(true) {
 		char key;
 		struct winsize w;
 
-		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);	// GET THE TERMINAL SIZE
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 		clear();
 
-		
+
 		while( ! kbhit() ){
 
 			clear();
-			
+
 			if ( rockstart > w.ws_row ){
 				++wtf;
 				rockstart = 0;
@@ -88,14 +85,12 @@ int main(){
 			}
 
 			if ( newRock == 1 );{
-				// randomXn = 3 + (rand() % (int)((w.ws_col - 6 ) - 3 + 1));
 				srand(time(0));
-				randomXn = rand()%w.ws_col+3;
-				randomX[1] = randomXn;
+				randomXn = rand()%(w.ws_col - 6)+3;
 				newRock = 0;
 			}
-			mvprintw(rockstart,randomX[1],"X");
-			++rockstart;				// END ROCK
+			mvprintw(rockstart,randomXn,"X");
+			++rockstart;                // END ROCK
 
 			if (kbhit()){
 				key = localGetch();
@@ -111,7 +106,7 @@ int main(){
 
 			++loops;
 
-			for (int i = 0; i < w.ws_row; ++i){		// BORDERS
+			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
 				mvprintw(i,3,"|");
 				mvprintw(i,w.ws_col - 3,"|");
 			}
@@ -127,7 +122,7 @@ int main(){
 				mvprintw(0,4,"lines %d\n", w.ws_row);
 				mvprintw(1,4,"columns %d\n", w.ws_col);
 				mvprintw(2,4,"Cursor at x:%i", startPoint);
-				mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomX[1]);
+				mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomXn);
 				mvprintw(4,4,"Loops %i", loops);
 				if (kbhit()){
 					mvprintw(5,4,"kbhit is at 1");
@@ -139,17 +134,17 @@ int main(){
 			}
 			refresh();
 		}
-		
+
 		clear();
 
-		mvprintw(rockstart,randomX[1],"X");
+		mvprintw(rockstart,randomXn,"X");
 
-		for (int i = 0; i < w.ws_row; ++i){		// BORDERS
+		for (int i = 0; i < w.ws_row; ++i){     // BORDERS
 			mvprintw(i,3,"|");
 			mvprintw(i,w.ws_col - 3,"|");
 		}
 
-		
+
 		if ( key == 'z' ){
 			if ( startPoint == 4 ){
 				continue;
@@ -159,7 +154,7 @@ int main(){
 			}
 		} else if ( key == 'x' ){
 			if ( startPoint == w.ws_col - 4 ){
-				continue;			
+				continue;
 			} else{
 				startPoint = startPoint + 1;
 				mvprintw(w.ws_row - 3,startPoint,"/A\\");
@@ -167,12 +162,12 @@ int main(){
 		} else {
 			continue;
 		}
-		
+
 		if ( consoleGraph == 1 ){
 			mvprintw(0,4,"lines %d\n", w.ws_row);
 			mvprintw(1,4,"columns %d\n", w.ws_col);
 			mvprintw(2,4,"Cursor at x:%i", startPoint);
-			mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomX[1]);
+			mvprintw(3,4,"Rock y:%i x:%i", rockstart, randomXn);
 			mvprintw(4,4,"Loops %i", loops);
 			if (kbhit()){
 				mvprintw(5,4,"kbhit is at 1");
