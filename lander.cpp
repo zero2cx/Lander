@@ -84,7 +84,7 @@ int main(){
 				break;
 			}
 
-			if ( newRock == 1 );{
+			if ( newRock == 1 ) {
 				srand(time(0));
 				randomXn = rand()%(w.ws_col - 6)+3;
 				newRock = 0;
