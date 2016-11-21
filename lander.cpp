@@ -76,6 +76,11 @@ int main(){
 				rockstart = 0;
 				newRock = 1;
 			}
+			if ( rockstart == shoot_Y && randomXn == shoot_X ){
+				++wtf;
+				rockstart = 0;
+				newRock = 1;
+			}
 
 			if (kbhit()){
 				key = getch();
@@ -112,7 +117,7 @@ int main(){
 			}
 			if ( shoot == 1 ){
 				int shootFix = 1;
-				mvprintw(shoot_Y,shoot_X,"*");
+				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
 				if ( shoot_Y == 0 ){
 					shoot = 0;
@@ -129,7 +134,7 @@ int main(){
 				break;
 			}
 
-			sleep_ms(50);
+			sleep_ms(160);
 
 			if (kbhit()){
 				key = getch();
@@ -167,14 +172,14 @@ int main(){
 				startPoint = startPoint - 1;
 				mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			}
-		} else if ( key == 'x' ){
+		} else if ( key == 'c' ){
 			if ( startPoint == w.ws_col - 6 ){
 				continue;
 			} else{
 				startPoint = startPoint + 1;
 				mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			}
-		} else if ( key == 'c' ){
+		} else if ( key == 'x' ){
 			shoot = 1;
 			shoot_X = startPoint;
 		} else {
