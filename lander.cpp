@@ -157,7 +157,7 @@ int main(){
 				mvprintw(w.ws_row - 3,startPoint,"/A\\");
 			}
 		} else if ( key == 'x' ){
-			if ( startPoint == w.ws_col - 4 ){
+			if ( startPoint == w.ws_col - 6 ){
 				continue;
 			} else{
 				startPoint = startPoint + 1;
