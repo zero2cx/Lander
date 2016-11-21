@@ -66,11 +66,8 @@ int main(){
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 		clear();
 
-
 		while( true ){
-
 			clear();
-
 			if ( rock_Y > w.ws_row ){
 				++wtf;
 				rock_Y = 0;
@@ -119,7 +116,6 @@ int main(){
 				goto GOVER;
 			}
 			if (shoot){
-				int shootFix = 1;
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
 				if ( shoot_Y == 0 ){
