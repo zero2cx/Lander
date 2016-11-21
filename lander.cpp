@@ -49,14 +49,12 @@ int main(){
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 	clear();
-	int randomXn = rand()%(w.ws_col - 6)+3;
+	int randomXn = rand()%(w.ws_col - 7)+4;
 	int newRock = 0;
 	int wtf = 0;
 
-
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
 
 	while(true) {
 		char key;
@@ -83,7 +81,7 @@ int main(){
 
 			if ( newRock == 1 ) {
 				srand(time(0));
-				randomXn = rand()%(w.ws_col - 6)+3;
+				randomXn = rand()%(w.ws_col - 7)+4;
 				newRock = 0;
 			}
 			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
