@@ -191,9 +191,9 @@ int main(){
 	}
 	GOVER:refresh();
 	clear();
-	mvprintw(10,10,"GAME OVER");
+	mvprintw(w.ws_row/2,w.ws_col/2,"GAME OVER");
 	refresh();
-	getch();
+	sleep_ms(3000);
 	endwin();
 	return 0;
 }
