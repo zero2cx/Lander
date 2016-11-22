@@ -212,9 +212,10 @@ int main(){
 
 		refresh();
 	}
-	GOVER:refresh();
+	GOVER:ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
+	refresh();
 	clear();
-	mvprintw(w.ws_row/2,w.ws_col/2,"GAME OVER");
+	mvprintw(w.ws_row/2,w.ws_col/2-4,"GAME OVER");
 	refresh();
 	sleep_ms(3000);
 	endwin();
