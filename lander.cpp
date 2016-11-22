@@ -72,7 +72,7 @@ int main(){
 				rock_Y = 0;
 				needsRock = 1;
 			}
-			if ( rock_Y == shoot_Y && rock_X == shoot_X ){
+			if ( ( rock_Y == shoot_Y || rock_Y == shoot_Y + 1 ) && ( rock_X == shoot_X || rock_X == shoot_X + 1 || rock_X == shoot_X - 1 )  ){
 				++wtf;
 				rock_Y = 0;
 				needsRock = 1;
