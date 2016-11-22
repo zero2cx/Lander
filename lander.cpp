@@ -42,7 +42,7 @@ int main(){
 	int ship_X = 15;
 	int rock_Y = 0;
 	int loops = 0;
-	int consoleGraph = 1;
+	bool debugGraph = false;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -51,9 +51,11 @@ int main(){
 	int rock_X = rand()%(w.ws_col - 7)+4;
 	int needsRock = 0;
 	int wtf = 0;
+    int oldwtf = 0;
 	bool shoot = 0;
 	int shoot_X = -1;
 	int shoot_Y = -1;
+    int score = 0;
 
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -66,6 +68,8 @@ int main(){
 		clear();
 
 		while( true ){
+            auto current_time = std::chrono::high_resolution_clock::now();
+            auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
 			clear();
 			if ( rock_Y > w.ws_row ){
 				++wtf;
@@ -73,7 +77,7 @@ int main(){
 				needsRock = 1;
 			}
 			if ( ( rock_Y == shoot_Y || rock_Y == shoot_Y + 1 ) && ( rock_X == shoot_X || rock_X == shoot_X + 1 || rock_X == shoot_X - 1 )  ){
-				++wtf;
+				wtf += 2;
 				rock_Y = 0;
 				needsRock = 1;
 				shoot = false;
@@ -91,30 +95,31 @@ int main(){
 				rock_X = rand()%(w.ws_col - 7)+4;
 				needsRock = 0;
 			}
-			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
+			for (int i = 0; i < w.ws_row; ++i){
 				mvprintw(i,3,"|");
 				mvprintw(i,w.ws_col - 3,"|");
 			}
-			if ( consoleGraph == 1 ){
-				mvprintw(0,4,"lines %d\n", w.ws_row);
-				mvprintw(1,4,"columns %d\n", w.ws_col);
-				mvprintw(2,4,"Cursor at x:%i", ship_X);
-				mvprintw(3,4,"Rock y:%i x:%i", rock_Y, rock_X);
-				mvprintw(4,4,"Loops %i", loops);
+			if (debugGraph){
+				mvprintw(1,4,"lines %d\n", w.ws_row);
+				mvprintw(2,4,"columns %d\n", w.ws_col);
+				mvprintw(3,4,"Cursor at x:%i", ship_X);
+				mvprintw(4,4,"Rock y:%i x:%i", rock_Y, rock_X);
+				mvprintw(5,4,"Loops %i", loops);
 				if (kbhit()){
-					mvprintw(5,4,"kbhit is at 1");
+					mvprintw(6,4,"kbhit is at 1");
 				} else{
-					mvprintw(5,4,"kbhit is at 0");
+					mvprintw(6,4,"kbhit is at 0");
 				}
-				mvprintw(6,4,"needsRock val:%i",needsRock);
-				mvprintw(7,4,"wtf:%i", wtf);
-				mvprintw(8,4,"kbhit ch:%i", chKBHIT);
-				mvprintw(9,4,"show at %i", shoot_Y);
-				auto current_time = std::chrono::high_resolution_clock::now();
-				mvprintw(0,w.ws_col - 3,"|");
-				mvprintw(1,w.ws_col - 3,"|");
-				mvprintw(0, w.ws_col - 12, "Time:%i", std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count());
+				mvprintw(7,4,"needsRock val:%i",needsRock);
+				mvprintw(8,4,"wtf:%i", wtf);
+				mvprintw(9,4,"kbhit ch:%i", chKBHIT);
+				mvprintw(10,4,"show at %i", shoot_Y);
 			}
+            mvprintw(0, 4, "Score:%i", score);
+            mvprintw(0,w.ws_col - 3,"|");
+            mvprintw(1,w.ws_col - 3,"|");
+            mvprintw(2,w.ws_col - 3,"|");
+            mvprintw(0, w.ws_col - 12, "Time:%i", second_time);
 			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
 				goto GOVER;
 			}
@@ -131,11 +136,12 @@ int main(){
 			mvprintw(rock_Y,rock_X,"X");
 			++rock_Y;                // END ROCK
 
-			if (kbhit()){
-				key = getch();
-				break;
-			}
-
+			if (kbhit()) {
+                key = getch();
+                break;
+            }
+            score += (wtf - oldwtf) * (second_time * 0.75);
+            oldwtf = wtf;
 			sleep_ms(50);
 
 			if (kbhit()){
@@ -188,24 +194,6 @@ int main(){
 		} else {
 			continue;
 		}
-
-		if ( consoleGraph == 1 ){
-			mvprintw(0,4,"lines %d\n", w.ws_row);
-			mvprintw(1,4,"columns %d\n", w.ws_col);
-			mvprintw(2,4,"Cursor at x:%i", ship_X);
-			mvprintw(3,4,"Rock y:%i x:%i", rock_Y, rock_X);
-			mvprintw(4,4,"Loops %i", loops);
-			if (kbhit()){
-				mvprintw(5,4,"kbhit is at 1");
-			} else{
-				mvprintw(5,4,"kbhit is at 0");
-			}
-			mvprintw(6,4,"needsRock val:%i",needsRock);
-			mvprintw(7,4,"wtf:%i", wtf);
-			mvprintw(8,4,"kbhit ch:%i", chKBHIT);
-			mvprintw(9,4,"show at %i", shoot_Y);
-		}
-
 		if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
 			goto GOVER;
 		}
