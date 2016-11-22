@@ -12,4 +12,5 @@ Lander is a top-down shooter made in C++
 * Add more Rocks
 * Add powerups (relentizer, etc.)
 * ~~Add guns (5 shots every 15-20 seconds)~~
+* Add entities with different velocities
 * Add more ideas
