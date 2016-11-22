@@ -100,26 +100,26 @@ int main(){
 				mvprintw(i,w.ws_col - 3,"|");
 			}
 			if (debugGraph){
-				mvprintw(1,4,"lines %d\n", w.ws_row);
-				mvprintw(2,4,"columns %d\n", w.ws_col);
-				mvprintw(3,4,"Cursor at x:%i", ship_X);
-				mvprintw(4,4,"Rock y:%i x:%i", rock_Y, rock_X);
-				mvprintw(5,4,"Loops %i", loops);
+				mvprintw(2,4,"lines %d\n", w.ws_row);
+				mvprintw(3,4,"columns %d\n", w.ws_col);
+				mvprintw(4,4,"Cursor at x:%i", ship_X);
+				mvprintw(5,4,"Rock y:%i x:%i", rock_Y, rock_X);
+				mvprintw(6,4,"Loops %i", loops);
 				if (kbhit()){
-					mvprintw(6,4,"kbhit is at 1");
+					mvprintw(7,4,"kbhit is at 1");
 				} else{
-					mvprintw(6,4,"kbhit is at 0");
+					mvprintw(7,4,"kbhit is at 0");
 				}
-				mvprintw(7,4,"needsRock val:%i",needsRock);
-				mvprintw(8,4,"wtf:%i", wtf);
-				mvprintw(9,4,"kbhit ch:%i", chKBHIT);
-				mvprintw(10,4,"show at %i", shoot_Y);
+				mvprintw(8,4,"needsRock val:%i",needsRock);
+				mvprintw(9,4,"wtf:%i", wtf);
+				mvprintw(10,4,"kbhit ch:%i", chKBHIT);
+				mvprintw(11,4,"show at %i", shoot_Y);
 			}
             mvprintw(0, 4, "Score:%i", score);
+            mvprintw(1, 4, "Time:%i", second_time);
             mvprintw(0,w.ws_col - 3,"|");
             mvprintw(1,w.ws_col - 3,"|");
             mvprintw(2,w.ws_col - 3,"|");
-            mvprintw(0, w.ws_col - 12, "Time:%i", second_time);
 			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
 				goto GOVER;
 			}
