@@ -8,6 +8,27 @@
 #include <fcntl.h>
 #include <time.h>
 
+struct rock_t {
+    int id;
+    int pos_X = -1;
+    int pos_Y = -1;
+    bool isActive;
+} rocks[20];
+
+void destroyRock(int id) {
+    for(rock_t r : rocks) {
+        if(r.id == id) {
+            r.pos_X = -1;
+            r.pos_Y = -1;
+            r.isActive = false;
+        }
+    }
+}
+
+void createRock(int id) {
+    rock_t r;
+    r.id = id;
+}
 
 int kbhit(void){
 	int ch = getch();
