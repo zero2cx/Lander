@@ -164,15 +164,6 @@ int main(){
 			refresh();
 		}
 
-		clear();
-		mvprintw(rock_Y,rock_X,"X");
-
-		for (int i = 0; i < w.ws_row; ++i){     // BORDERS
-			mvprintw(i,3,"|");
-			mvprintw(i,w.ws_col - 3,"|");
-		}
-
-
 		if ( key == 'z' ){
 			if ( ship_X == 4 ){
 				continue;
