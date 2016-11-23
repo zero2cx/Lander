@@ -14,3 +14,9 @@ Lander is a top-down shooter made in C++
 * ~~Add guns (5 shots every 15-20 seconds)~~
 * Add entities with different velocities
 * Add more ideas
+
+##CONTRIBUTORS
+Main Contributors:
+
+* [MrWhiteGoat](https://github.com/MrWhiteGoat) [ Senpai ]
+* [Capuno](https://github.com/Capuno) [ lil' niga ]
