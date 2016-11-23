@@ -103,6 +103,7 @@ int main(){
                                                                                                                      rocks[i].pos_X == shoot_X + 1 ||
                                                                                                                      rocks[i].pos_X == shoot_X - 1)) {
                     wtf += 2;
+                    destroyRock(i);
                     rocks[i].needsRock = 1;
                     shoot = false;
                     shoot_X = -1;
@@ -207,8 +208,6 @@ int main(){
             shoot = true;
             shoot_X = ship_X;
             shoot_Y = w.ws_row - 4;;
-        }else if(key == 'p') {
-            destroyRock(0);
 		} else {
 			continue;
 		}
