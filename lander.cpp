@@ -20,7 +20,7 @@ struct rock_t {
 void destroyRock(int id) {
     rocks[id].pos_Y = 0;
     rocks[id].pos_X = -1;
-	srand((time(0) * i) + time(0));
+	srand((time(0) * id) + time(0));
 	int m_rand = rand()%10;
 	if(m_rand == 0) {
 		rocks[id].velocity = 2;
