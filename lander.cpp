@@ -20,7 +20,14 @@ struct rock_t {
 void destroyRock(int id) {
     rocks[id].pos_Y = 0;
     rocks[id].pos_X = -1;
-    rocks[id].isActive = false;
+	rocks[id].isActive = false;
+	srand(time(0));
+	int m_rand = rand()%10;
+	if(m_rand == 0) {
+		rocks[id].velocity = 2;
+	}else{
+		rocks[id].velocity = 1;
+	}
 }
 
 void createRock(int id) {
@@ -59,7 +66,7 @@ void sleep_ms(int milliseconds){
 }
 
 
-int main(){
+int main() {
 	auto start_time = std::chrono::high_resolution_clock::now();
 	initscr();
 	curs_set(0);
@@ -87,7 +94,7 @@ int main(){
     rocks[0].isActive = true;
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
+	start_color();
 	while(true) {
 		char key;
 		struct winsize w;
@@ -148,6 +155,7 @@ int main(){
 				mvprintw(10,4,"kbhit ch:%i", chKBHIT);
 				mvprintw(11,4,"show at %i", shoot_Y);
                 mvprintw(12,4,"oldwtf:%i", oldwtf);
+				mvprintw(13, 4, "Colours:%i", has_colors());
 			}
             mvprintw(0, 4, "Score:%i", score);
             mvprintw(1, 4, "Time:%i", second_time);
@@ -167,8 +175,15 @@ int main(){
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
             for(int i = 0; i < w.ws_col; i++) {
                 if(rocks[i].isActive) {
-                    mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
-                    rocks[i].pos_Y += rocks[i].velocity;
+					if(rocks[i].velocity == 2) {
+						init_pair(1, COLOR_RED, COLOR_BLACK);
+						attron(COLOR_PAIR(1));
+						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
+						attroff(COLOR_PAIR(1));
+					}else{
+						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
+					}
+					rocks[i].pos_Y += rocks[i].velocity;
                 }
             }
 
