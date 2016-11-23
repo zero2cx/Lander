@@ -24,14 +24,13 @@ void destroyRock(int id) {
 }
 
 void createRock(int id) {
-    rock_t r = rocks[id];
-    r.id = id;
-    r.velocity = 1;
-    r.pos_X = -1;
-    r.pos_Y = 0;
-    r.isActive = false;
-    r.needsRock = false;
-    rocks[id] = r;
+    rock_t* r = &rocks[id];
+    r->id = id;
+    r->velocity = 1;
+    r->pos_X = -1;
+    r->pos_Y = 0;
+    r->isActive = false;
+    r->needsRock = false;
 }
 
 int kbhit(void){
