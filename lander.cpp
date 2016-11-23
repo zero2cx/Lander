@@ -11,18 +11,14 @@
 struct rock_t {
     int id;
     int pos_X = -1;
-    int pos_Y = -1;
+    int pos_Y = 0;
     bool isActive;
-} rocks[20];
+    bool needsRock;
+} rocks[0];
 
 void destroyRock(int id) {
-    for(rock_t r : rocks) {
-        if(r.id == id) {
-            r.pos_X = -1;
-            r.pos_Y = -1;
-            r.isActive = false;
-        }
-    }
+    rocks[id].pos_Y = 0;
+    rocks[id].pos_X = -1;
 }
 
 void createRock(int id) {
@@ -61,7 +57,6 @@ int main(){
 	initscr();
 	curs_set(0);
 	int ship_X = 15;
-	int rock_Y = 0;
 	int loops = 0;
 	int consoleGraph = 1;
 	int chKBHIT;
@@ -69,13 +64,18 @@ int main(){
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 	clear();
-	int rock_X = rand()%(w.ws_col - 7)+4;
-	int needsRock = 0;
+	int needsRock = 1;
 	int wtf = 0;
 	bool shoot = 0;
 	int shoot_X = -1;
 	int shoot_Y = -1;
-
+    for(int i = 0; i < w.ws_col; i++) {
+        createRock(i);
+        srand((time(0) * i) + time(0));
+        rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
+        rocks[i].isActive = false;
+    }
+    rocks[0].isActive = true;
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
@@ -88,30 +88,34 @@ int main(){
 
 		while( true ){
 			clear();
-			if ( rock_Y > w.ws_row ){
-				++wtf;
-				rock_Y = 0;
-				needsRock = 1;
-			}
-			if ( rock_Y == shoot_Y && rock_X == shoot_X ){
-				++wtf;
-				rock_Y = 0;
-				needsRock = 1;
-				shoot = false;
-				shoot_X = -1;
-				shoot_Y - 1;
-			}
+            for(int i = 0; i < w.ws_col; i++) {
+                if (rocks[i].pos_Y > w.ws_row ){
+                    wtf++;
+                    destroyRock(i);
+                    rocks[i].needsRock = 1;
+                }
+                if (rocks[i].pos_Y == shoot_Y && rocks[i].pos_X == shoot_X ){
+                    wtf++;
+                    rocks[i].needsRock = 1;
+                    shoot = false;
+                    shoot_X = -1;
+                    shoot_Y = -1;
+                }
+                if (rocks[i].needsRock == 1 ) {
+                    srand((time(0) * i) + time(0));
+                    rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
+                    rocks[i].needsRock = 0;
+                }
+                if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X) && (rocks[i].pos_Y == w.ws_row - 3) ){
+                    goto GOVER;
+                }
+            }
 
 			if (kbhit()){
 				key = getch();
 				break;
 			}
 
-			if ( needsRock == 1 ) {
-				srand(time(0));
-				rock_X = rand()%(w.ws_col - 7)+4;
-				needsRock = 0;
-			}
 			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
 				mvprintw(i,3,"|");
 				mvprintw(i,w.ws_col - 3,"|");
@@ -120,7 +124,6 @@ int main(){
 				mvprintw(0,4,"lines %d\n", w.ws_row);
 				mvprintw(1,4,"columns %d\n", w.ws_col);
 				mvprintw(2,4,"Cursor at x:%i", ship_X);
-				mvprintw(3,4,"Rock y:%i x:%i", rock_Y, rock_X);
 				mvprintw(4,4,"Loops %i", loops);
 				if (kbhit()){
 					mvprintw(5,4,"kbhit is at 1");
@@ -136,9 +139,6 @@ int main(){
 				mvprintw(1,w.ws_col - 3,"|");
 				mvprintw(0, w.ws_col - 12, "Time:%i", std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count());
 			}
-			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
-				goto GOVER;
-			}
 			if (shoot){
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
@@ -149,14 +149,22 @@ int main(){
 			}
 			refresh();
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
-			mvprintw(rock_Y,rock_X,"X");
-			++rock_Y;                // END ROCK
+            for(int i = 0; i < w.ws_col; i++) {
+                if(rocks[i].isActive) {
+                    mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
+                    rocks[i].pos_Y++;
+                }
+            }
 
 			if (kbhit()){
 				key = getch();
 				break;
 			}
-
+            auto current_time = std::chrono::high_resolution_clock::now();
+            for(int i = 0; i <= std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count() / 10; i++) {
+                auto current_time = std::chrono::high_resolution_clock::now();
+                rocks[i].isActive = true;
+            }
 			sleep_ms(50);
 
 			if (kbhit()){
@@ -170,24 +178,8 @@ int main(){
 				key = getch();
 				break;
 			}
-
-			mvprintw(w.ws_row - 3,ship_X,"/A\\");
-
-			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
-				goto GOVER;
-			}
 			refresh();
 		}
-
-		clear();
-		mvprintw(rock_Y,rock_X,"X");
-
-		for (int i = 0; i < w.ws_row; ++i){     // BORDERS
-			mvprintw(i,3,"|");
-			mvprintw(i,w.ws_col - 3,"|");
-		}
-
-
 		if ( key == 'z' ){
 			if ( ship_X == 4 ){
 				continue;
@@ -202,36 +194,15 @@ int main(){
 				ship_X = ship_X + 1;
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
-		} else if ( key == 'x'  && !shoot){
-			shoot = true;
-			shoot_X = ship_X;
-			shoot_Y = w.ws_row-4;;
+		} else if ( key == 'x'  && !shoot) {
+            shoot = true;
+            shoot_X = ship_X;
+            shoot_Y = w.ws_row - 4;;
+        }else if(key == 'p') {
+            destroyRock(0);
 		} else {
 			continue;
 		}
-
-		if ( consoleGraph == 1 ){
-			mvprintw(0,4,"lines %d\n", w.ws_row);
-			mvprintw(1,4,"columns %d\n", w.ws_col);
-			mvprintw(2,4,"Cursor at x:%i", ship_X);
-			mvprintw(3,4,"Rock y:%i x:%i", rock_Y, rock_X);
-			mvprintw(4,4,"Loops %i", loops);
-			if (kbhit()){
-				mvprintw(5,4,"kbhit is at 1");
-			} else{
-				mvprintw(5,4,"kbhit is at 0");
-			}
-			mvprintw(6,4,"needsRock val:%i",needsRock);
-			mvprintw(7,4,"wtf:%i", wtf);
-			mvprintw(8,4,"kbhit ch:%i", chKBHIT);
-			mvprintw(9,4,"show at %i", shoot_Y);
-		}
-
-		if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
-			goto GOVER;
-		}
-
-		refresh();
 	}
 	GOVER:refresh();
 	clear();
