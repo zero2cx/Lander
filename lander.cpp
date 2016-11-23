@@ -65,7 +65,6 @@ int main(){
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 	clear();
-	int needsRock = 1;
 	int wtf = 0;
     int oldwtf = 0;
 	bool shoot = 0;
@@ -138,7 +137,6 @@ int main(){
 				} else{
 					mvprintw(7,4,"kbhit is at 0");
 				}
-				mvprintw(8,4,"needsRock val:%i",needsRock);
 				mvprintw(9,4,"wtf:%i", wtf);
 				mvprintw(10,4,"kbhit ch:%i", chKBHIT);
 				mvprintw(11,4,"show at %i", shoot_Y);
