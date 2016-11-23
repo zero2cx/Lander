@@ -22,7 +22,8 @@ void destroyRock(int id) {
     rocks[id].pos_X = -1;
 	srand((time(0) * id) + time(0));
 	int m_rand = rand()%10;
-	if(m_rand == 0) {
+    //20% chance
+	if(m_rand == 0 || m_rand == 1) {
 		rocks[id].velocity = 2;
 	}else{
 		rocks[id].velocity = 1;
@@ -179,13 +180,14 @@ int main() {
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
             for(int i = 0; i < w.ws_col; i++) {
                 if(rocks[i].isActive) {
-					if(rocks[i].velocity == 2) {
+					if(rocks[i].velocity == 2 && second_time >= 30) {
 						init_pair(1, COLOR_RED, COLOR_BLACK);
 						attron(COLOR_PAIR(1));
 						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
 						attroff(COLOR_PAIR(1));
 					}else{
 						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
+                        rocks[i].velocity = 1;
 					}
 					rocks[i].pos_Y += rocks[i].velocity;
                 }
