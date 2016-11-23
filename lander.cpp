@@ -217,7 +217,7 @@ int main(){
 	refresh();
 	clear();
 	mvprintw(w.ws_row/2,w.ws_col/2-4,"GAME OVER");
-    mvprintw(w.ws_row / 2 + 1, w.ws_col / 2 - 4, "%i", score);
+    mvprintw(w.ws_row / 2 + 1, w.ws_col / 2, "%i", score);
 	refresh();
 	sleep_ms(6000);
 	endwin();
