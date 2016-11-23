@@ -19,6 +19,7 @@ struct rock_t {
 void destroyRock(int id) {
     rocks[id].pos_Y = 0;
     rocks[id].pos_X = -1;
+    rocks[id].isActive = false;
 }
 
 void createRock(int id) {
@@ -99,7 +100,9 @@ int main(){
                     destroyRock(i);
                     rocks[i].needsRock = 1;
                 }
-                if (rocks[i].pos_Y == shoot_Y && rocks[i].pos_X == shoot_X ){
+                if ((rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X ||
+                                                                                                                     rocks[i].pos_X == shoot_X + 1 ||
+                                                                                                                     rocks[i].pos_X == shoot_X - 1)) {
                     wtf++;
                     rocks[i].needsRock = 1;
                     shoot = false;
