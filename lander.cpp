@@ -129,7 +129,6 @@ int main(){
 				mvprintw(2,4,"lines %d\n", w.ws_row);
 				mvprintw(3,4,"columns %d\n", w.ws_col);
 				mvprintw(4,4,"Cursor at x:%i", ship_X);
-				mvprintw(5,4,"Rock y:%i x:%i", rock_Y, rock_X);
 				mvprintw(6,4,"Loops %i", loops);
 				if (kbhit()){
 					mvprintw(7,4,"kbhit is at 1");
@@ -146,9 +145,6 @@ int main(){
             mvprintw(0,w.ws_col - 3,"|");
             mvprintw(1,w.ws_col - 3,"|");
             mvprintw(2,w.ws_col - 3,"|");
-			if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
-				goto GOVER;
-			}
 			if (shoot){
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
@@ -170,9 +166,7 @@ int main(){
 				key = getch();
 				break;
 			}
-            auto current_time = std::chrono::high_resolution_clock::now();
-            for(int i = 0; i <= std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count() / 10; i++) {
-                auto current_time = std::chrono::high_resolution_clock::now();
+            for(int i = 0; i <= second_time / 10; i++) {
                 rocks[i].isActive = true;
             }
             oldwtf = wtf;
@@ -215,10 +209,6 @@ int main(){
 		} else {
 			continue;
 		}
-		if ( (ship_X == rock_X || ship_X + 1 == rock_X || ship_X + 2 == rock_X) && (rock_Y == w.ws_row - 3) ){
-			goto GOVER;
-		}
-
 		refresh();
 	}
 	GOVER:ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
