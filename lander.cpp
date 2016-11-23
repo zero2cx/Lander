@@ -69,8 +69,8 @@ int main(){
 	int wtf = 0;
     int oldwtf = 0;
 	bool shoot = 0;
-	int shoot_X = -1;
-	int shoot_Y = -1;
+	int shoot_X = -10;
+	int shoot_Y = -10;
     int score = 0;
 
     for(int i = 0; i < w.ws_col; i++) {
@@ -103,7 +103,7 @@ int main(){
                 if ((rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X ||
                                                                                                                      rocks[i].pos_X == shoot_X + 1 ||
                                                                                                                      rocks[i].pos_X == shoot_X - 1)) {
-                    wtf++;
+                    wtf += 2;
                     rocks[i].needsRock = 1;
                     shoot = false;
                     shoot_X = -1;
@@ -142,12 +142,14 @@ int main(){
 				mvprintw(9,4,"wtf:%i", wtf);
 				mvprintw(10,4,"kbhit ch:%i", chKBHIT);
 				mvprintw(11,4,"show at %i", shoot_Y);
+                mvprintw(12,4,"oldwtf:%i", oldwtf);
 			}
             mvprintw(0, 4, "Score:%i", score);
             mvprintw(1, 4, "Time:%i", second_time);
             mvprintw(0,w.ws_col - 3,"|");
             mvprintw(1,w.ws_col - 3,"|");
             mvprintw(2,w.ws_col - 3,"|");
+            mvprintw(3,w.ws_col - 3,"|");
 			if (shoot){
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
@@ -172,8 +174,8 @@ int main(){
             for(int i = 0; i <= second_time / 10; i++) {
                 rocks[i].isActive = true;
             }
-            oldwtf = wtf;
             score += (wtf - oldwtf) * (second_time * 0.75);
+            oldwtf = wtf;
 			sleep_ms(50);
 
 			if (kbhit()){
