@@ -10,8 +10,9 @@
 
 struct rock_t {
     int id;
-    int pos_X = -1;
-    int pos_Y = 0;
+    int velocity;
+    int pos_X;
+    int pos_Y;
     bool isActive;
     bool needsRock;
 } rocks[0];
@@ -25,10 +26,12 @@ void destroyRock(int id) {
 void createRock(int id) {
     rock_t r = rocks[id];
     r.id = id;
+    r.velocity = 1;
     r.pos_X = -1;
     r.pos_Y = 0;
     r.isActive = false;
     r.needsRock = false;
+    rocks[id] = r;
 }
 
 int kbhit(void){
@@ -166,7 +169,7 @@ int main(){
             for(int i = 0; i < w.ws_col; i++) {
                 if(rocks[i].isActive) {
                     mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
-                    rocks[i].pos_Y++;
+                    rocks[i].pos_Y += rocks[i].velocity;
                 }
             }
 
