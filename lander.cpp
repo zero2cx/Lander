@@ -106,8 +106,8 @@ int main(){
                     destroyRock(i);
                     rocks[i].needsRock = 1;
                     shoot = false;
-                    shoot_X = -1;
-                    shoot_Y = -1;
+                    shoot_X = -10;
+                    shoot_Y = -10;
                 }
                 if (rocks[i].needsRock == 1 ) {
                     srand((time(0) * i) + time(0));
@@ -154,7 +154,7 @@ int main(){
 				--shoot_Y;
 				if ( shoot_Y == 0 ){
 					shoot = false;
-					shoot_Y = -1;
+					shoot_Y = -10;
 				}
 			}
 			refresh();
