@@ -126,7 +126,12 @@ int main() {
                     rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
                     rocks[i].needsRock = 0;
                 }
-                if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X) && (rocks[i].pos_Y == w.ws_row - 3) ){
+                if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
+                    && (rocks[i].pos_Y == w.ws_row - 3) ){
+                    goto GOVER;
+                }
+                if((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
+                   && (rocks[i].pos_Y > (w.ws_row -3))) {
                     goto GOVER;
                 }
             }
