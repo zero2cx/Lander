@@ -99,7 +99,7 @@ int main(){
                     destroyRock(i);
                     rocks[i].needsRock = 1;
                 }
-                if ((rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X ||
+                if (rocks[i].isActive && (rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X ||
                                                                                                                      rocks[i].pos_X == shoot_X + 1 ||
                                                                                                                      rocks[i].pos_X == shoot_X - 1)) {
                     wtf += 2;
