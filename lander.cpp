@@ -20,7 +20,6 @@ struct rock_t {
 void destroyRock(int id) {
     rocks[id].pos_Y = 0;
     rocks[id].pos_X = -1;
-    rocks[id].isActive = false;
 }
 
 void createRock(int id) {
