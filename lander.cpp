@@ -121,33 +121,31 @@ int main() {
 			auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
 			clear();
             for(int i = 0; i < w.ws_col; i++) {
-                if (rocks[i].pos_Y > w.ws_row ){
+                if (rocks[i].pos_Y > w.ws_row) {
                     wtf++;
                     destroyRock(i);
                     rocks[i].needsRock = 1;
                 }
-				if (rocks[i].isActive && (rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
-					wtf += 2;
-					destroyRock(i);
-					rocks[i].needsRock = 1;
-					shoot = false;
-					shoot_X = -10;
-					shoot_Y = -10;
-				}
-                if (rocks[i].needsRock == 1 ) {
-                    rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
+                if (rocks[i].isActive &&
+                    (rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) &&
+                    (rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
+                    wtf += 2;
+                    destroyRock(i);
+                    rocks[i].needsRock = 1;
+                    shoot = false;
+                    shoot_X = -10;
+                    shoot_Y = -10;
+                }
+                if (rocks[i].needsRock == 1) {
+                    rocks[i].pos_X = rand() % (w.ws_col - 7) + 4;
                     srand((time(0) * i) + time(0));
                     rocks[i].needsRock = 0;
+                }
                 if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
-                }
-                    && (rocks[i].pos_Y == w.ws_row - 3) ){
+                    && (rocks[i].pos_Y > (w.ws_row - 3))) {
                     goto GOVER;
                 }
-                if((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
-                   && (rocks[i].pos_Y > (w.ws_row -3))) {
-                    goto GOVER;
             }
-                }
 
 			if (kbhit()){
 				key = getch();
