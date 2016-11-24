@@ -86,7 +86,7 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = true;
+	bool debugGraph = false;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
