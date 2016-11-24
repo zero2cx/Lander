@@ -85,7 +85,7 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = false;
+	bool debugGraph = true;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -125,9 +125,7 @@ int main() {
 					destroyRock(i);
 					rocks[i].needsRock = 1;
 				}
-				if (rocks[i].isActive && (rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X ||
-																													 rocks[i].pos_X == shoot_X + 1 ||
-																													 rocks[i].pos_X == shoot_X - 1)) {
+				if (rocks[i].isActive && (rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) && (rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
 					wtf += 2;
 					destroyRock(i);
 					rocks[i].needsRock = 1;
