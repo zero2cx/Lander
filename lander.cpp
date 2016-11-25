@@ -36,7 +36,7 @@ void destroyRock(int id) {
 	rocks[id].pos_X = -1;
 	srand((time(0) * id) + time(0));
 	int m_rand = rand()%10;
-    //20% chance
+	//20% chance
 	if(m_rand == 0 || m_rand == 1) {
 		rocks[id].velocity = 2;
 	}else{
@@ -86,7 +86,7 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = false;
+	bool debugGraph = true;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -98,6 +98,7 @@ int main() {
 	int shoot_X = -10;
 	int shoot_Y = -10;
 	int score = 0;
+	int cooldownShot = 0;
 
 	for(int i = 0; i < w.ws_col; i++) {
 		createRock(i);
@@ -120,36 +121,40 @@ int main() {
 			auto current_time = std::chrono::high_resolution_clock::now();
 			auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
 			clear();
-            for(int i = 0; i < w.ws_col; i++) {
-                if (rocks[i].pos_Y > w.ws_row) {
-                    wtf++;
-                    destroyRock(i);
-                    rocks[i].needsRock = 1;
-                }
-                if (rocks[i].isActive &&
-                    (rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) &&
-                    (rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
-                    wtf += 2;
-                    destroyRock(i);
-                    rocks[i].needsRock = 1;
-                    shoot = false;
-                    shoot_X = -10;
-                    shoot_Y = -10;
-                }
-                if (rocks[i].needsRock == 1) {
-                    rocks[i].pos_X = rand() % (w.ws_col - 7) + 4;
-                    srand((time(0) * i) + time(0));
-                    rocks[i].needsRock = 0;
-                }
-                if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
-                    && (rocks[i].pos_Y > (w.ws_row - 3))) {
-                    goto GOVER;
-                }
-            }
+			for(int i = 0; i < w.ws_col; i++) {
+				if (rocks[i].pos_Y > w.ws_row) {
+					wtf++;
+					destroyRock(i);
+					rocks[i].needsRock = 1;
+				}
+				if (rocks[i].isActive &&
+					(rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) &&
+					(rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
+					wtf += 2;
+					destroyRock(i);
+					rocks[i].needsRock = 1;
+					shoot = false;
+					shoot_X = -10;
+					shoot_Y = -10;
+				}
+				if (rocks[i].needsRock == 1) {
+					rocks[i].pos_X = rand() % (w.ws_col - 7) + 4;
+					srand((time(0) * i) + time(0));
+					rocks[i].needsRock = 0;
+				}
+				if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
+					&& (rocks[i].pos_Y > (w.ws_row - 3))) {
+					goto GOVER;
+				}
+			}
 
 			if (kbhit()){
 				key = getch();
 				break;
+			}
+
+			if ( cooldownShot > 0 ) {
+				--cooldownShot;
 			}
 
 			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
@@ -171,6 +176,7 @@ int main() {
 				mvprintw(11,4,"show at %i", shoot_Y);
 				mvprintw(12,4,"oldwtf:%i", oldwtf);
 				mvprintw(13, 4, "Colours:%i", has_colors());
+				mvprintw(14,4,"cooldownShot: %i", cooldownShot);
 			}
 			mvprintw(0, 4, "Score:%i", score);
 			mvprintw(1, 4, "Time:%i", second_time);
@@ -188,8 +194,8 @@ int main() {
 			}
 			refresh();
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
-            for(int i = 0; i < w.ws_col; i++) {
-                if(rocks[i].isActive) {
+			for(int i = 0; i < w.ws_col; i++) {
+				if(rocks[i].isActive) {
 					if(rocks[i].velocity == 2 && second_time >= 30) {
 						init_pair(1, COLOR_RED, COLOR_BLACK);
 						attron(COLOR_PAIR(1));
@@ -197,7 +203,7 @@ int main() {
 						attroff(COLOR_PAIR(1));
 					}else{
 						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
-                        rocks[i].velocity = 1;
+						rocks[i].velocity = 1;
 					}
 					rocks[i].pos_Y += rocks[i].velocity;
 				}
@@ -241,7 +247,8 @@ int main() {
 				ship_X = ship_X + 1;
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
-		} else if ( key == 'x'  && !shoot) {
+		} else if ( key == 'x'  && !shoot && cooldownShot == 0) {
+			cooldownShot = 20;
 			shoot = true;
 			shoot_X = ship_X;
 			shoot_Y = w.ws_row - 4;;
