@@ -240,20 +240,25 @@ int main() {
 				ship_X = ship_X - 1;
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
+			++loops;
 		} else if ( key == 'c' ){
 			if ( ship_X == w.ws_col - 6 ){
+				++loops;
 				continue;
 			} else{
 				ship_X = ship_X + 1;
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
+				++loops;
 			}
 		} else if ( key == 'x'  && !shoot && cooldownShot == 0) {
 			cooldownShot = 20;
 			shoot = true;
 			shoot_X = ship_X;
-			shoot_Y = w.ws_row - 4;;
+			shoot_Y = w.ws_row - 4;
+			++loops;
 		} else {
 			continue;
+			++loops;
 		}
 		refresh();
 	}
