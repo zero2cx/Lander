@@ -11,7 +11,6 @@
 #include <fstream>
 
 struct rock_t {
-	int id;
 	int velocity;
 	int pos_X;
 	int pos_Y;
@@ -33,22 +32,21 @@ int nDigits(int x) {
 		10)))))))));
 }  
 
-void destroyRock(int id) {
-	rocks[id].pos_Y = 0;
-	rocks[id].pos_X = -1;
-	srand((time(0) * id) + time(0));
+void destroyRock(int i) {
+	rocks[i].pos_Y = 0;
+	rocks[i].pos_X = -1;
+	srand((time(0) * i) + time(0));
 	int m_rand = rand()%10;
 	//20% chance
 	if(m_rand == 0 || m_rand == 1) {
-		rocks[id].velocity = 2;
+		rocks[i].velocity = 2;
 	}else{
-		rocks[id].velocity = 1;
+		rocks[i].velocity = 1;
 	}
 }
 
-void createRock(int id) {
-	rock_t* r = &rocks[id];
-	r->id = id;
+void createRock(int i) {
+	rock_t* r = &rocks[i];
 	r->velocity = 1;
 	r->pos_X = -1;
 	r->pos_Y = 0;
