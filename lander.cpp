@@ -123,14 +123,14 @@ int main() {
 			clear();
 			for(int i = 0; i < w.ws_col; i++) {
 				if (rocks[i].pos_Y > w.ws_row) {
-					wtf++;
+					wtf += rocks[i].velocity;
 					destroyRock(i);
 					rocks[i].needsRock = 1;
 				}
 				if (rocks[i].isActive &&
 					(rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) &&
 					(rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
-					wtf += 2;
+					wtf += 2 * rocks[i].velocity;
 					destroyRock(i);
 					rocks[i].needsRock = 1;
 					shoot = false;
