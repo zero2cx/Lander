@@ -10,50 +10,84 @@
 #include <iostream>
 #include <fstream>
 
+struct bullet_t {
+    int id;
+    int pos_X;
+    int pos_Y;
+    bool isActive;
+    bool canShoot;
+} bullets[0];
+
 struct rock_t {
-	int id;
-	int velocity;
-	int pos_X;
-	int pos_Y;
-	bool isActive;
-	bool needsRock;
+    int id;
+    int velocity;
+    int pos_X;
+    int pos_Y;
+    bool isActive;
+    bool needsRock;
 } rocks[0];
 
 int nDigits(int x) {
-	x = abs(x);
-	return (x < 10 ? 1 : 
-		(x < 100 ? 2 : 
-		(x < 1000 ? 3 : 
-		(x < 10000 ? 4 : 
-		(x < 100000 ? 5 : 
-		(x < 1000000 ? 6 : 
-		(x < 10000000 ? 7 :
-		(x < 100000000 ? 8 :
-		(x < 1000000000 ? 9 :
-		10)))))))));
-}  
+    x = abs(x);
+    return (x < 10 ? 1 :
+            (x < 100 ? 2 :
+             (x < 1000 ? 3 :
+              (x < 10000 ? 4 :
+               (x < 100000 ? 5 :
+                (x < 1000000 ? 6 :
+                 (x < 10000000 ? 7 :
+                  (x < 100000000 ? 8 :
+                   (x < 1000000000 ? 9 :
+                    10)))))))));
+}
+
+void createBullet(int id) {
+    bullet_t* b = &bullets[id];
+    b->id = id;
+    b->pos_X = -10;
+    b->pos_Y = -10;
+    b->isActive = false;
+    b->canShoot = true;
+}
+
+void resetBullet(int id) {
+    bullets[id].canShoot = true;
+    bullets[id].isActive = false;
+    bullets[id].pos_X = -10;
+    bullets[id].pos_Y = -10;
+}
+
+int currentAmmo() {
+    int i = 0;
+    for(int ii = 0; ii < 5; ii++) {
+        if(bullets[ii].canShoot) {
+            i++;
+        }
+    }
+    return i;
+}
 
 void destroyRock(int id) {
-	rocks[id].pos_Y = 0;
-	rocks[id].pos_X = -1;
-	srand((time(0) * id) + time(0));
-	int m_rand = rand()%10;
-	//20% chance
-	if(m_rand == 0 || m_rand == 1) {
-		rocks[id].velocity = 2;
-	}else{
-		rocks[id].velocity = 1;
-	}
+    rocks[id].pos_Y = 0;
+    rocks[id].pos_X = -1;
+    srand((time(0) * id) + time(0));
+    int m_rand = rand()%10;
+    //20% chance
+    if(m_rand == 0 || m_rand == 1) {
+        rocks[id].velocity = 2;
+    }else{
+        rocks[id].velocity = 1;
+    }
 }
 
 void createRock(int id) {
-	rock_t* r = &rocks[id];
-	r->id = id;
-	r->velocity = 1;
-	r->pos_X = -1;
-	r->pos_Y = 0;
-	r->isActive = false;
-	r->needsRock = false;
+    rock_t* r = &rocks[id];
+    r->id = id;
+    r->velocity = 1;
+    r->pos_X = -1;
+    r->pos_Y = 0;
+    r->isActive = false;
+    r->needsRock = false;
 }
 
 int kbhit(void){
@@ -88,7 +122,7 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = false;
+	bool debugGraph = true;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -108,6 +142,9 @@ int main() {
 		rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
 		rocks[i].isActive = false;
 	}
+    for(int i = 0; i < 5; i++) {
+        createBullet(i);//Weird shit here. Comment this loop out and check out wtf var, etc
+    }
 	rocks[0].isActive = true;
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
