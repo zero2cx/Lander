@@ -102,7 +102,7 @@ int main() {
 	int score = 0;
 	int cooldownShot = 0;
 
-	for(int i = 0; i < w.ws_col; i++) {
+	for(int i = 0; i <= w.ws_col; i++) {
 		createRock(i);
 		srand((time(0) * i) + time(0));
 		rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
@@ -123,7 +123,7 @@ int main() {
 			auto current_time = std::chrono::high_resolution_clock::now();
 			auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
 			clear();
-			for(int i = 0; i < w.ws_col; i++) {
+			for(int i = 0; i <= w.ws_col; i++) {
 				if (rocks[i].pos_Y > w.ws_row) {
 					wtf += rocks[i].velocity;
 					destroyRock(i);
@@ -196,7 +196,7 @@ int main() {
 			}
 			refresh();
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
-			for(int i = 0; i < w.ws_col; i++) {
+			for(int i = 0; i <= w.ws_col; i++) {
 				if(rocks[i].isActive) {
 					if(rocks[i].velocity == 2 && second_time >= 30) {
 						init_pair(1, COLOR_RED, COLOR_BLACK);
