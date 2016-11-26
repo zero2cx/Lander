@@ -7,6 +7,8 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <time.h>
+#include <iostream>
+#include <fstream>
 
 struct rock_t {
 	int id;
@@ -86,7 +88,7 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = true;
+	bool debugGraph = false;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -263,11 +265,28 @@ int main() {
 		refresh();
 	}
 	GOVER:ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
+
+	std::ifstream highscore;
+	highscore.open("highscore");
+	int hs;
+	highscore >> hs;
+	if (score>hs){
+		std::ofstream newHS;
+		newHS.open("highscore");
+		newHS << score;
+		newHS.close();
+		hs=score;
+	}
+
 	refresh();
 	clear();
-	mvprintw(w.ws_row/2,w.ws_col/2-4,"GAME OVER");
+	mvprintw(w.ws_row/2-3,w.ws_col/2-5,"GAME OVER");
 	int scoredigits=nDigits(score);
+	int hscoredigits=nDigits(hs);
+	mvprintw(w.ws_row / 2, w.ws_col / 2 - 3, "Score");
 	mvprintw(w.ws_row / 2 + 1, w.ws_col / 2 - scoredigits / 2, "%i", score);
+	mvprintw(w.ws_row / 2 + 3, w.ws_col / 2 - 5, "Highscore");
+	mvprintw(w.ws_row / 2 + 4, w.ws_col / 2 - hscoredigits / 2, "%i", hs);
 	refresh();
 	sleep_ms(6000);
 	endwin();
