@@ -1,0 +1,103 @@
+body{
+	background-color: #262626;
+	font-family: Ubuntu;
+}
+
+div#thewholesht{
+	margin: 0 auto;
+	left: 50%;
+	width: 1500px;
+}
+
+hr{
+	color: #54591D;
+	border-color: #54591D;
+	background-color: #54591D;
+	box-shadow: 0px 0px 5px;
+	margin-bottom: 30px;
+}
+
+div#maingif img{
+	border: 3px solid #3F503F;
+}
+
+/*-----------HEADER-------------*/
+header h2,h3{
+	font-family: Ubuntu;
+}
+
+header{
+	background-color: #1c1c1c;
+	border: 3px solid #3F503F;
+	margin-bottom: 30px;
+}
+
+header div *{
+	color: #B2BB50;
+	display: inline-block;
+}
+/*------------------------------------*/
+
+/*------MAIN NAV---------------*/
+div#leftNAV{
+	width: 100%;
+}
+nav,li{
+	width: 100%;
+	list-style: none;
+}
+div#leftNAV nav#mainBTNS li a{
+	margin-top: 5px;
+	padding-top: 10px;
+	padding-left: 15px;
+	padding-bottom: 10px;
+	display: block;
+	background-color: #1c1c1c;
+	border: 3px solid #3F503F;
+	width: 100%;
+	text-decoration: none;
+	color: #B2BB50;
+	width: 97%;
+}
+div#leftNAV nav#mainBTNS li a:hover{
+	border-color: #2D4A2D;
+	background-color: #212121;
+}
+div#leftNAV:hover nav#mainBTNS li a span{
+	text-shadow: 0px 0px 10px #B2BB50;
+}
+/*----------------------------------*/
+
+/*------------MANPAGE-------*/
+div#manpage{
+	margin-top: 30px;
+	background-color: #1c1c1c;
+	border: 3px solid #3F503F;
+}
+div#manpage p{
+	color: #B2BB50;
+}
+p.innr{
+	padding-left: 30px;
+}
+table#first{
+	margin: 0 auto;
+	left: 50%;
+}
+div.innrDiv{
+	color: #B2BB50;
+	width: 350px;
+	background-color: #2D2E29;
+}
+div.innrDiv:hover{
+	background-color: #373832;
+}
+img.profIMG{
+	background-color: #000; 
+	box-shadow: 2px 2px 10px rgba(0,0,0,0.6); 
+	-moz-box-shadow: 2px 2px 10px rgba(0,0,0,0.6); 
+	-webkit-box-shadow: 2px 2px 10px rgba(0,0,0,0.6); 
+	-o-box-shadow: 2px 2px 10px rgba(0,0,0,0.6); 
+	border-radius:100px;
+}
+/*----------------------------------*/
