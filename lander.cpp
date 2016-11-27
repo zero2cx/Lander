@@ -173,7 +173,7 @@ int main() {
 			if ( second_time > 25 && laserCD <= 0 ){	//LASER (POWERUP) CREATION
 				pu_laser_X=4+rand()%((w.ws_col-7)-4);
 				pu_laser_Y=0;
-				mvprintw(pu_laser_Y,pu_laser_X,"Y");
+                mvprintw(pu_laser_Y,pu_laser_X,"Y");
 				laserOnScreen = true;
 				laserCD=300;
 			}
@@ -263,7 +263,10 @@ int main() {
 			mvprintw(3,w.ws_col - 3,"\u2503");
 			if (laserEnabled){						// THE ACTUAL LASER
 				for (int i = 0; i < w.ws_row-4; ++i){
+                    init_pair(1, COLOR_BLUE, COLOR_BLACK);
+                    attron(COLOR_PAIR(1));
 					mvprintw(i,ship_X+1,"\u2502");
+                    attroff(COLOR_PAIR(1));
 				}
 			}
 			if (shoot){
