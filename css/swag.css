@@ -79,6 +79,11 @@ div#manpage p{
 }
 p.innr{
 	padding-left: 30px;
+	color: #B2BB50;
+}
+p.innr2{
+	padding-left: 120px;
+	color: #B2BB50;
 }
 table#first{
 	margin: 0 auto;
