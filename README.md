@@ -13,6 +13,6 @@ Main Contributors:
 
 
 ##DEPENDENCIES
-libncurses5-dev, g++
+libncurses5-dev, g++, libncursesw5-dev
 
-Debian `sudo apt install g++ libncurses5-dev`
+Debian `sudo apt install g++ libncurses5-dev libncursesw5-dev` 

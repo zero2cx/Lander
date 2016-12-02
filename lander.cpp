@@ -9,8 +9,10 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <locale.h>
 
 struct rock_t {
+	int id;
 	int velocity;
 	int pos_X;
 	int pos_Y;
@@ -20,33 +22,34 @@ struct rock_t {
 
 int nDigits(int x) {
 	x = abs(x);
-	return (x < 10 ? 1 : 
-		(x < 100 ? 2 : 
-		(x < 1000 ? 3 : 
-		(x < 10000 ? 4 : 
-		(x < 100000 ? 5 : 
-		(x < 1000000 ? 6 : 
-		(x < 10000000 ? 7 :
-		(x < 100000000 ? 8 :
-		(x < 1000000000 ? 9 :
-		10)))))))));
-}  
+	return (x < 10 ? 1 :
+			(x < 100 ? 2 :
+			 (x < 1000 ? 3 :
+			  (x < 10000 ? 4 :
+			   (x < 100000 ? 5 :
+				(x < 1000000 ? 6 :
+				 (x < 10000000 ? 7 :
+				  (x < 100000000 ? 8 :
+				   (x < 1000000000 ? 9 :
+					10)))))))));
+}
 
-void destroyRock(int i) {
-	rocks[i].pos_Y = 0;
-	rocks[i].pos_X = -1;
-	srand((time(0) * i) + time(0));
+void destroyRock(int id) {
+	rocks[id].pos_Y = 0;
+	rocks[id].pos_X = -1;
+	srand((time(0) * id) + time(0));
 	int m_rand = rand()%10;
 	//20% chance
 	if(m_rand == 0 || m_rand == 1) {
-		rocks[i].velocity = 2;
+		rocks[id].velocity = 2;
 	}else{
-		rocks[i].velocity = 1;
+		rocks[id].velocity = 1;
 	}
 }
 
-void createRock(int i) {
-	rock_t* r = &rocks[i];
+void createRock(int id) {
+	rock_t* r = &rocks[id];
+	r->id = id;
 	r->velocity = 1;
 	r->pos_X = -1;
 	r->pos_Y = 0;
@@ -81,12 +84,13 @@ void sleep_ms(int milliseconds){
 
 
 int main() {
+	setlocale(LC_ALL,"");
 	auto start_time = std::chrono::high_resolution_clock::now();
 	initscr();
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = false;
+	bool debugGraph = true;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -99,6 +103,12 @@ int main() {
 	int shoot_Y = -10;
 	int score = 0;
 	int cooldownShot = 0;
+	int pu_laser_X;
+	int pu_laser_Y;
+	int laserCD = 0;
+	int restartLaser = 0;
+	bool laserEnabled = false;
+	bool laserOnScreen = false;
 
 	for(int i = 0; i < w.ws_col; i++) {
 		createRock(i);
@@ -120,7 +130,35 @@ int main() {
 		while( true ){
 			auto current_time = std::chrono::high_resolution_clock::now();
 			auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
+			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
+
+			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
+				pu_laser_X=4+rand()%((w.ws_col-7)-4);
+				pu_laser_Y=0;
+				mvprintw(pu_laser_Y,pu_laser_X,"Y");
+				laserOnScreen = true;
+				laserCD=300;
+			}
+			if ( laserOnScreen ){               //LASER (POWERUP) MOVEMENT
+				++pu_laser_Y;
+				mvprintw(pu_laser_Y,pu_laser_X,"Y");
+				if (pu_laser_Y==w.ws_row-3 && ( pu_laser_X == ship_X || pu_laser_X == ship_X+1 || pu_laser_X == ship_X+2 )){
+					laserOnScreen = false;
+					laserEnabled = true;
+					restartLaser=150;
+				} else if (pu_laser_Y > w.ws_row){
+					laserOnScreen = false;
+					laserEnabled = false;
+				} 
+			}
+			--laserCD;
+			if (restartLaser == 0){
+				laserEnabled = false;
+			} else {
+				--restartLaser;
+			}
+
 			for(int i = 0; i < w.ws_col; i++) {
 				if (rocks[i].pos_Y > w.ws_row) {
 					wtf += rocks[i].velocity;
@@ -158,12 +196,14 @@ int main() {
 			}
 
 			for (int i = 0; i < w.ws_row; ++i){     // BORDERS
-				mvprintw(i,3,"|");
-				mvprintw(i,w.ws_col - 3,"|");
+				mvprintw(i,3, "\u2503");
+				mvprintw(i,w.ws_col - 3, "\u2503");
 			}
 			if (debugGraph){
-				mvprintw(2,4,"lines %d\n", w.ws_row);
-				mvprintw(3,4,"columns %d\n", w.ws_col);
+				int linesD=w.ws_row;
+				int columnsD=w.ws_col;
+				mvprintw(2,4,"lines %d\n", linesD);
+				mvprintw(3,4,"columns %d\n", columnsD);
 				mvprintw(4,4,"Cursor at x:%i", ship_X);
 				mvprintw(6,4,"Loops %i", loops);
 				if (kbhit()){
@@ -180,10 +220,18 @@ int main() {
 			}
 			mvprintw(0, 4, "Score:%i", score);
 			mvprintw(1, 4, "Time:%i", second_time);
-			mvprintw(0,w.ws_col - 3,"|");
-			mvprintw(1,w.ws_col - 3,"|");
-			mvprintw(2,w.ws_col - 3,"|");
-			mvprintw(3,w.ws_col - 3,"|");
+			mvprintw(0,w.ws_col - 3,"\u2503");
+			mvprintw(1,w.ws_col - 3,"\u2503");
+			mvprintw(2,w.ws_col - 3,"\u2503");
+			mvprintw(3,w.ws_col - 3,"\u2503");
+			if (laserEnabled){                      // THE ACTUAL LASER
+				for (int i = 0; i < w.ws_row-4; ++i){
+					init_pair(1, COLOR_BLUE, COLOR_BLACK);
+					attron(COLOR_PAIR(1));
+					mvprintw(i,ship_X+1,"\u2502");
+					attroff(COLOR_PAIR(1));
+				}
+			}
 			if (shoot){
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
@@ -268,12 +316,14 @@ int main() {
 	highscore.open("highscore");
 	int hs;
 	highscore >> hs;
+	highscore.close();
 	if (score>hs){
 		std::ofstream newHS;
 		newHS.open("highscore");
 		newHS << score;
 		newHS.close();
 		hs=score;
+		newHS.close();
 	}
 
 	refresh();
