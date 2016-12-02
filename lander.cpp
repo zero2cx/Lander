@@ -11,14 +11,6 @@
 #include <fstream>
 #include <locale.h>
 
-struct bullet_t {
-	int id;
-	int pos_X;
-	int pos_Y;
-	bool isActive;
-	bool canShoot;
-} bullets[0];
-
 struct rock_t {
 	int id;
 	int velocity;
@@ -40,32 +32,6 @@ int nDigits(int x) {
 				  (x < 100000000 ? 8 :
 				   (x < 1000000000 ? 9 :
 					10)))))))));
-}
-
-void createBullet(int id) {
-	bullet_t* b = &bullets[id];
-	b->id = id;
-	b->pos_X = -10;
-	b->pos_Y = -10;
-	b->isActive = false;
-	b->canShoot = true;
-}
-
-void resetBullet(int id) {
-	bullets[id].canShoot = true;
-	bullets[id].isActive = false;
-	bullets[id].pos_X = -10;
-	bullets[id].pos_Y = -10;
-}
-
-int currentAmmo() {
-	int i = 0;
-	for(int ii = 0; ii < 5; ii++) {
-		if(bullets[ii].canShoot) {
-			i++;
-		}
-	}
-	return i;
 }
 
 void destroyRock(int id) {
@@ -150,9 +116,6 @@ int main() {
 		rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
 		rocks[i].isActive = false;
 	}
-	for(int i = 0; i < 5; i++) {
-		createBullet(i);//Weird shit here. Comment this loop out and check out wtf var, etc
-	}
 	rocks[0].isActive = true;
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -170,14 +133,14 @@ int main() {
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
-			if ( second_time > 25 && laserCD <= 0 ){	//LASER (POWERUP) CREATION
+			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
 				pu_laser_X=4+rand()%((w.ws_col-7)-4);
 				pu_laser_Y=0;
-                mvprintw(pu_laser_Y,pu_laser_X,"Y");
+				mvprintw(pu_laser_Y,pu_laser_X,"Y");
 				laserOnScreen = true;
 				laserCD=300;
 			}
-			if ( laserOnScreen ){				//LASER (POWERUP) MOVEMENT
+			if ( laserOnScreen ){               //LASER (POWERUP) MOVEMENT
 				++pu_laser_Y;
 				mvprintw(pu_laser_Y,pu_laser_X,"Y");
 				if (pu_laser_Y==w.ws_row-3 && ( pu_laser_X == ship_X || pu_laser_X == ship_X+1 || pu_laser_X == ship_X+2 )){
@@ -261,12 +224,12 @@ int main() {
 			mvprintw(1,w.ws_col - 3,"\u2503");
 			mvprintw(2,w.ws_col - 3,"\u2503");
 			mvprintw(3,w.ws_col - 3,"\u2503");
-			if (laserEnabled){						// THE ACTUAL LASER
+			if (laserEnabled){                      // THE ACTUAL LASER
 				for (int i = 0; i < w.ws_row-4; ++i){
-                    init_pair(1, COLOR_BLUE, COLOR_BLACK);
-                    attron(COLOR_PAIR(1));
+					init_pair(1, COLOR_BLUE, COLOR_BLACK);
+					attron(COLOR_PAIR(1));
 					mvprintw(i,ship_X+1,"\u2502");
-                    attroff(COLOR_PAIR(1));
+					attroff(COLOR_PAIR(1));
 				}
 			}
 			if (shoot){
