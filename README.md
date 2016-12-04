@@ -1,7 +1,7 @@
 # Lander
 CLI Top-Down Space Shooter
 
-![Main gif](http://i.imgur.com/n7N9KJv.gif)
+![Main gif](http://i.imgur.com/70jvdo3.gif)
 
 Lander is a top-down shooter made in C++
 
