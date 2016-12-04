@@ -283,7 +283,7 @@ int main() {
 			}
 			refresh();
 		}
-		if ( key == KEY_LEFT ){
+		if ( key == KEY_MOVE_LEFT ){
 			if ( ship_X == 4 ){
 				continue;
 			} else{
@@ -291,7 +291,7 @@ int main() {
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
 			++loops;
-		} else if ( key == KEY_RIGHT ){
+		} else if ( key == KEY_MOVE_RIGHT ){
 			if ( ship_X == w.ws_col - 6 ){
 				++loops;
 				continue;
