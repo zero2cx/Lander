@@ -1,1 +1,1 @@
-g++ lander.cpp -lncursesw -std=c++11 -pthread
+g++ lander.cpp -lncursesw -std=c++11 -pthread -o lander_game
