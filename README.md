@@ -10,6 +10,7 @@ Main Contributors:
 
 * [MrWhiteGoat](https://github.com/MrWhiteGoat)
 * [Capuno](https://github.com/Capuno)
+* [Superchet](https://github.com/Superchet)
 
 
 ##DEPENDENCIES
