@@ -20,7 +20,7 @@ Debian `sudo apt install g++ libncurses5-dev libncursesw5-dev`
 
 Arch `sudo pacman -S gcc`
 
-##Controls
+##CONTROLS
 
  * `z` moves left
  * `x` shoots
