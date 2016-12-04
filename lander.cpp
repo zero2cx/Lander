@@ -11,6 +11,8 @@
 #include <fstream>
 #include <locale.h>
 
+#include "config.h"
+
 struct rock_t {
 	int id;
 	int velocity;
@@ -281,7 +283,7 @@ int main() {
 			}
 			refresh();
 		}
-		if ( key == 'z' ){
+		if ( key == KEY_MOVE_LEFT ){
 			if ( ship_X == 4 ){
 				continue;
 			} else{
@@ -289,7 +291,7 @@ int main() {
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
 			++loops;
-		} else if ( key == 'c' ){
+		} else if ( key == KEY_MOVE_RIGHT ){
 			if ( ship_X == w.ws_col - 6 ){
 				++loops;
 				continue;
@@ -298,7 +300,7 @@ int main() {
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 				++loops;
 			}
-		} else if ( key == 'x'  && !shoot && cooldownShot == 0) {
+		} else if ( key == KEY_SHOOT  && !shoot && cooldownShot == 0) {
 			cooldownShot = 20;
 			shoot = true;
 			shoot_X = ship_X;
