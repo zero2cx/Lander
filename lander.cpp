@@ -13,17 +13,20 @@
 
 #include "config.h"
 
-struct rock_t {
-	int id;
-	int velocity;
-	int pos_X;
-	int pos_Y;
+struct rock_t
+{
+    int id;
+    int velocity;
+    int_pos_X;
+    int pos_Y;
 	bool isActive;
-	bool needsRock;
-} rocks[0];
+    bool needsRock;
+}
+rocks[0];
 
-int nDigits(int x) {
-	x = abs(x);
+int nDigits(int x)
+{
+    x = abs(x);
 	return (x < 10 ? 1 :
 			(x < 100 ? 2 :
 			 (x < 1000 ? 3 :
@@ -36,20 +39,27 @@ int nDigits(int x) {
 					10)))))))));
 }
 
-void destroyRock(int id) {
+void destroyRock(int id)
+{
+
 	rocks[id].pos_Y = 0;
 	rocks[id].pos_X = -1;
 	srand((time(0) * id) + time(0));
 	int m_rand = rand()%10;
 	//20% chance
-	if(m_rand == 0 || m_rand == 1) {
+	if(m_rand == 0 || m_rand == 1)
+    {
 		rocks[id].velocity = 2;
-	}else{
+	}
+
+    else
+    {
 		rocks[id].velocity = 1;
 	}
 }
 
-void createRock(int id) {
+void createRock(int id)
+{
 	rock_t* r = &rocks[id];
 	r->id = id;
 	r->velocity = 1;
@@ -59,19 +69,24 @@ void createRock(int id) {
 	r->needsRock = false;
 }
 
-int kbhit(void){
+int kbhit(void)
+{
 	int ch = getch();
 
-	if (ch != ERR) {
+	if (ch != ERR)
+    {
 		ungetch(ch);
 		return 1;
-	} else {
+	}
+
+    else
+    {
 		return 0;
 	}
 }
 
-
-void sleep_ms(int milliseconds){
+void sleep_ms(int milliseconds)
+{
 #ifdef WIN32
 	Sleep(milliseconds);
 #elif _POSIX_C_SOURCE >= 199309L
@@ -84,8 +99,8 @@ void sleep_ms(int milliseconds){
 #endif
 }
 
-
-int main() {
+int main()
+{
 	setlocale(LC_ALL,"");
 	auto start_time = std::chrono::high_resolution_clock::now();
 	initscr();
@@ -112,7 +127,8 @@ int main() {
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
 
-	for(int i = 0; i < w.ws_col; i++) {
+	for(int i = 0; i < w.ws_col; i++)
+    {
 		createRock(i);
 		srand((time(0) * i) + time(0));
 		rocks[i].pos_X = rand()%(w.ws_col - 7)+4;
@@ -122,54 +138,71 @@ int main() {
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	start_color();
-	while(true) {
+	while(true)
+    {
 		char key;
 		struct winsize w;
 
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);   // GET THE TERMINAL SIZE
 		clear();
 
-		while( true ){
+		while( true )
+        {
 			auto current_time = std::chrono::high_resolution_clock::now();
 			auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
-			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
+			if ( second_time > 25 && laserCD <= 0 )
+            {    //LASER (POWERUP) CREATION
 				pu_laser_X=4+rand()%((w.ws_col-7)-4);
 				pu_laser_Y=0;
 				mvprintw(pu_laser_Y,pu_laser_X,"Y");
 				laserOnScreen = true;
 				laserCD=300;
 			}
-			if ( laserOnScreen ){               //LASER (POWERUP) MOVEMENT
+
+			if ( laserOnScreen )
+            {               //LASER (POWERUP) MOVEMENT
 				++pu_laser_Y;
 				mvprintw(pu_laser_Y,pu_laser_X,"Y");
-				if (pu_laser_Y==w.ws_row-3 && ( pu_laser_X == ship_X || pu_laser_X == ship_X+1 || pu_laser_X == ship_X+2 )){
+				if (pu_laser_Y==w.ws_row-3 && ( pu_laser_X == ship_X || pu_laser_X == ship_X+1 || pu_laser_X == ship_X+2 ))
+                {
 					laserOnScreen = false;
 					laserEnabled = true;
 					restartLaser=150;
-				} else if (pu_laser_Y > w.ws_row){
+				}
+
+                else if (pu_laser_Y > w.ws_row)
+                {
 					laserOnScreen = false;
 					laserEnabled = false;
 				} 
 			}
 			--laserCD;
-			if (restartLaser == 0){
+			if (restartLaser == 0)
+            {
 				laserEnabled = false;
-			} else {
+			}
+
+            else
+            {
 				--restartLaser;
 			}
 
-			for(int i = 0; i < w.ws_col; i++) {
-				if (rocks[i].pos_Y > w.ws_row) {
+			for(int i = 0; i < w.ws_col; i++)
+            {
+				if (rocks[i].pos_Y > w.ws_row)
+                {
 					wtf += rocks[i].velocity;
 					destroyRock(i);
 					rocks[i].needsRock = 1;
 				}
+
 				if (rocks[i].isActive &&
 					(rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) &&
-					(rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
+					(rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2))
+                {
 					wtf += 2 * rocks[i].velocity;
 					destroyRock(i);
 					rocks[i].needsRock = 1;
@@ -177,13 +210,16 @@ int main() {
 					shoot_X = -10;
 					shoot_Y = -10;
 				}
-				if (rocks[i].needsRock == 1) {
+
+				if (rocks[i].needsRock == 1)
+                {
 					rocks[i].pos_X = rand() % (w.ws_col - 7) + 4;
 					srand((time(0) * i) + time(0));
 					rocks[i].needsRock = 0;
 				}
 				if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
-					&& (rocks[i].pos_Y > (w.ws_row - 3))) {
+					&& (rocks[i].pos_Y > (w.ws_row - 3)))
+                {
 					goto GOVER;
 				}
 			}
@@ -201,16 +237,22 @@ int main() {
 				mvprintw(i,3, "\u2503");
 				mvprintw(i,w.ws_col - 3, "\u2503");
 			}
-			if (debugGraph){
+            
+			if (debugGraph)
+            {
 				int linesD=w.ws_row;
 				int columnsD=w.ws_col;
 				mvprintw(2,4,"lines %d\n", linesD);
 				mvprintw(3,4,"columns %d\n", columnsD);
 				mvprintw(4,4,"Cursor at x:%i", ship_X);
 				mvprintw(6,4,"Loops %i", loops);
-				if (kbhit()){
+				if (kbhit())
+                {
 					mvprintw(7,4,"kbhit is at 1");
-				} else{
+				} 
+                
+                else
+                {
 					mvprintw(7,4,"kbhit is at 0");
 				}
 				mvprintw(9,4,"wtf:%i", wtf);
@@ -226,32 +268,41 @@ int main() {
 			mvprintw(1,w.ws_col - 3,"\u2503");
 			mvprintw(2,w.ws_col - 3,"\u2503");
 			mvprintw(3,w.ws_col - 3,"\u2503");
-			if (laserEnabled){                      // THE ACTUAL LASER
-				for (int i = 0; i < w.ws_row-4; ++i){
+			if (laserEnabled)
+            {                      // THE ACTUAL LASER
+				for (int i = 0; i < w.ws_row-4; ++i)
+                {
 					init_pair(1, COLOR_BLUE, COLOR_BLACK);
 					attron(COLOR_PAIR(1));
 					mvprintw(i,ship_X+1,"\u2502");
 					attroff(COLOR_PAIR(1));
 				}
 			}
-			if (shoot){
+			if (shoot)
+            {
 				mvprintw(shoot_Y,shoot_X+1,"*");
 				--shoot_Y;
-				if ( shoot_Y == 0 ){
+				if ( shoot_Y == 0 )
+                {
 					shoot = false;
 					shoot_Y = -10;
 				}
 			}
 			refresh();
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
-			for(int i = 0; i < w.ws_col; i++) {
+			for(int i = 0; i < w.ws_col; i++)
+            {
 				if(rocks[i].isActive) {
-					if(rocks[i].velocity == 2 && second_time >= 30) {
+					if(rocks[i].velocity == 2 && second_time >= 30)
+                    {
 						init_pair(1, COLOR_RED, COLOR_BLACK);
 						attron(COLOR_PAIR(1));
 						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
 						attroff(COLOR_PAIR(1));
-					}else{
+					}
+
+                    else
+                    {
 						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
 						rocks[i].velocity = 1;
 					}
@@ -259,54 +310,76 @@ int main() {
 				}
 			}
 
-			if (kbhit()){
+			if (kbhit())
+            {
 				key = getch();
 				break;
 			}
-			for(int i = 0; i <= second_time / 10; i++) {
+			for(int i = 0; i <= second_time / 10; i++)
+            {
 				rocks[i].isActive = true;
 			}
 			score += (wtf - oldwtf) * (second_time * 0.75);
 			oldwtf = wtf;
 			sleep_ms(50);
 
-			if (kbhit()){
+			if (kbhit())
+            {
 				key = getch();
 				break;
 			}
 
 			++loops;
 
-			if (kbhit()){
+			if (kbhit())
+            {
 				key = getch();
 				break;
 			}
 			refresh();
 		}
-		if ( key == KEY_MOVE_LEFT ){
-			if ( ship_X == 4 ){
+		if ( key == KEY_MOVE_LEFT )
+        {
+			if ( ship_X == 4 )
+            {
 				continue;
-			} else{
+			}
+            
+            else
+            {
 				ship_X = ship_X - 1;
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			}
 			++loops;
-		} else if ( key == KEY_MOVE_RIGHT ){
-			if ( ship_X == w.ws_col - 6 ){
+		}
+        
+        else if ( key == KEY_MOVE_RIGHT )
+        {
+			if ( ship_X == w.ws_col - 6 )
+            {
 				++loops;
 				continue;
-			} else{
+			} 
+            
+            else
+            {
 				ship_X = ship_X + 1;
 				mvprintw(w.ws_row - 3,ship_X,"/A\\");
 				++loops;
 			}
-		} else if ( key == KEY_SHOOT  && !shoot && cooldownShot == 0) {
+		}
+        
+        else if ( key == KEY_SHOOT  && !shoot && cooldownShot == 0)
+        {
 			cooldownShot = 20;
 			shoot = true;
 			shoot_X = ship_X;
 			shoot_Y = w.ws_row - 4;
 			++loops;
-		} else {
+		}
+        
+        else
+        {
 			continue;
 			++loops;
 		}
@@ -319,7 +392,9 @@ int main() {
 	int hs;
 	highscore >> hs;
 	highscore.close();
-	if (score>hs){
+    
+	if (score>hs)
+    {
 		std::ofstream newHS;
 		newHS.open("highscore");
 		newHS << score;
