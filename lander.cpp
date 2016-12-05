@@ -162,28 +162,29 @@ int main() {
 			}
 
 			for(int i = 0; i < w.ws_col; i++) {
-				if (rocks[i].pos_Y > w.ws_row) {
-					wtf += rocks[i].velocity;
+				rock_t* r = &rocks[i];
+				if (r->pos_Y > w.ws_row) {
+					wtf += r->velocity;
 					destroyRock(i);
-					rocks[i].needsRock = 1;
+					r->needsRock = 1;
 				}
-				if (rocks[i].isActive &&
-					(rocks[i].pos_Y == shoot_Y || rocks[i].pos_Y == shoot_Y + 1 || rocks[i].pos_Y == shoot_Y - 1) &&
-					(rocks[i].pos_X == shoot_X || rocks[i].pos_X == shoot_X + 1 || rocks[i].pos_X == shoot_X + 2)) {
-					wtf += 2 * rocks[i].velocity;
+				if (r->isActive &&
+					(r->pos_Y == shoot_Y || r->pos_Y == shoot_Y + 1 || r->pos_Y == shoot_Y - 1) &&
+					(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
+					wtf += 2 * r->velocity;
 					destroyRock(i);
 					rocks[i].needsRock = 1;
 					shoot = false;
 					shoot_X = -10;
 					shoot_Y = -10;
 				}
-				if (rocks[i].needsRock == 1) {
-					rocks[i].pos_X = rand() % (w.ws_col - 7) + 4;
+				if (r->needsRock == 1) {
+					r->pos_X = rand() % (w.ws_col - 7) + 4;
 					srand((time(0) * i) + time(0));
-					rocks[i].needsRock = 0;
+					r->needsRock = 0;
 				}
-				if ((ship_X == rocks[i].pos_X || ship_X + 1 == rocks[i].pos_X || ship_X + 2 == rocks[i].pos_X)
-					&& (rocks[i].pos_Y > (w.ws_row - 3))) {
+				if ((ship_X == r->pos_X || ship_X + 1 == r->pos_X || ship_X + 2 == r->pos_X)
+					&& (r->pos_Y > (w.ws_row - 3))) {
 					goto GOVER;
 				}
 			}
@@ -245,17 +246,18 @@ int main() {
 			refresh();
 			mvprintw(w.ws_row - 3,ship_X,"/A\\");
 			for(int i = 0; i < w.ws_col; i++) {
-				if(rocks[i].isActive) {
-					if(rocks[i].velocity == 2 && second_time >= 30) {
+				rock_t* r = &rocks[i];
+				if(r->isActive) {
+					if(r->velocity == 2 && second_time >= 30) {
 						init_pair(1, COLOR_RED, COLOR_BLACK);
 						attron(COLOR_PAIR(1));
-						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
+						mvprintw(r->pos_Y, r->pos_X,"X");
 						attroff(COLOR_PAIR(1));
 					}else{
-						mvprintw(rocks[i].pos_Y,rocks[i].pos_X,"X");
-						rocks[i].velocity = 1;
+						mvprintw(r->pos_Y, r->pos_X,"X");
+						r->velocity = 1;
 					}
-					rocks[i].pos_Y += rocks[i].velocity;
+					r->pos_Y += r->velocity;
 				}
 			}
 
