@@ -27,3 +27,10 @@ Arch `sudo pacman -S gcc`
  * `c` moves right
 
 This can be configured in `config.h` before compiling.
+
+
+
+&emsp;
+
+###KNOWN ISSUES
+* *When the terminal is wider than 191 columns; Segmantation fault*
