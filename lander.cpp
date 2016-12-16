@@ -21,7 +21,7 @@ struct rock_t {
 	int pos_Y;
 	bool isActive;
 	bool needsRock;
-} rocks[0];
+} rocks[0], bossShoot[0];
 
 int nDigits(int x) {
 	x = abs(x);
@@ -110,6 +110,7 @@ int main() {
 	int bossStart = -5;
 	int bossMov = 0;
 	int bossMovX = 0;
+	int bossShootID = 0;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
 	bool fistStepBoss = true;
@@ -138,7 +139,7 @@ int main() {
 			clear();
 
 			if (second_time > 10 && bossCD <= 0){						// TOP TO MID BOSS, i know, pretty stupid code, shut up
-				if (bossStart<10){
+				if (bossStart<6){
 					mvprintw(bossStart, w.ws_col/2-4, "_________");
 					mvprintw(bossStart+1, w.ws_col/2-4, "\\ o-X-o /");
 					mvprintw(bossStart+2, w.ws_col/2-4, " \\|_ _|/");
@@ -148,16 +149,54 @@ int main() {
 						bossStart++;
 						bossMov = 0;
 					}
-				} else if ((w.ws_col/2-4-bossMovX) > 4 && fistStepBoss){		// MID TO LEFT BOSS
+				} else if ((w.ws_col/2-4-bossMovX) > 4 && fistStepBoss){		// WHATEVER TO LEFT BOSS
 					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
 					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
 					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
 					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
 					bossMov++;
+
 					if (bossMov == 5){
 						bossMovX++;
 						bossMov = 0;
+						for(int i = bossShootID; i < bossShootID+2; i++) {
+							rock_t* r = &bossShoot[i];
+
+
+							if (r->pos_Y < 10){
+								r->pos_Y = 10;
+							}
+
+
+
+							if (r->pos_Y > w.ws_row) {
+								wtf += r->velocity;
+								destroyRock(i);
+								r->needsRock = 1;
+							}
+							if (r->isActive &&
+								(r->pos_Y == shoot_Y || r->pos_Y == shoot_Y + 1 || r->pos_Y == shoot_Y - 1) &&
+								(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
+								wtf += 2 * r->velocity;
+								destroyRock(i);
+								rocks[i].needsRock = 1;
+								shoot = false;
+								shoot_X = -10;
+								shoot_Y = -10;
+							}
+							if (r->needsRock == 1) {
+								r->pos_X = rand() % (w.ws_col - 7) + 4;
+								srand((time(0) * i) + time(0));
+								r->needsRock = 0;
+							}
+							if ((ship_X == r->pos_X || ship_X + 1 == r->pos_X || ship_X + 2 == r->pos_X)
+								&& (r->pos_Y > (w.ws_row - 3))) {
+								goto GOVER;
+							}
+						}
+						bossShootID = bossShootID+2;
 					}
+
 				} else if ((w.ws_col/2-4-bossMovX) < w.ws_col-12){
 					fistStepBoss = false;
 					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
