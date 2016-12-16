@@ -112,6 +112,7 @@ int main() {
 	int bossMovX = 0;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
+	bool fistStepBoss = true;
 
 	for(int i = 0; i < w.ws_col; i++) {
 		createRock(i);
@@ -136,7 +137,7 @@ int main() {
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
-			if (second_time > 10 && bossCD <= 0){
+			if (second_time > 10 && bossCD <= 0){						// TOP TO MID BOSS, i know, pretty stupid code, shut up
 				if (bossStart<10){
 					mvprintw(bossStart, w.ws_col/2-4, "_________");
 					mvprintw(bossStart+1, w.ws_col/2-4, "\\ o-X-o /");
@@ -147,7 +148,7 @@ int main() {
 						bossStart++;
 						bossMov = 0;
 					}
-				} else if ((w.ws_col/2-4-bossMovX) > 4){
+				} else if ((w.ws_col/2-4-bossMovX) > 4 && fistStepBoss){		// MID TO LEFT BOSS
 					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
 					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
 					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
@@ -155,6 +156,17 @@ int main() {
 					bossMov++;
 					if (bossMov == 5){
 						bossMovX++;
+						bossMov = 0;
+					}
+				} else if ((w.ws_col/2-4-bossMovX) < w.ws_col-12){
+					fistStepBoss = false;
+					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
+					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
+					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
+					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
+					bossMov++;
+					if (bossMov == 5){
+						bossMovX--;
 						bossMov = 0;
 					}
 				}
