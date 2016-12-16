@@ -169,6 +169,8 @@ int main() {
 						bossMovX--;
 						bossMov = 0;
 					}
+				} else {
+					fistStepBoss = true;
 				}
 				
 			}
