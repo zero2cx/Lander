@@ -89,7 +89,7 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = true;
+	bool debugGraph = false;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -106,6 +106,10 @@ int main() {
 	int pu_laser_Y;
 	int laserCD = 0;
 	int restartLaser = 0;
+	int bossCD = 0;
+	int bossStart = -5;
+	int bossMov = 0;
+	int bossMovX = 0;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
 
@@ -131,6 +135,31 @@ int main() {
 			auto second_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
+
+			if (second_time > 10 && bossCD <= 0){
+				if (bossStart<10){
+					mvprintw(bossStart, w.ws_col/2-4, "_________");
+					mvprintw(bossStart+1, w.ws_col/2-4, "\\ o-X-o /");
+					mvprintw(bossStart+2, w.ws_col/2-4, " \\|_ _|/");
+					mvprintw(bossStart+3, w.ws_col/2-4, "  | V |");
+					bossMov++;
+					if (bossMov == 5){
+						bossStart++;
+						bossMov = 0;
+					}
+				} else if ((w.ws_col/2-4-bossMovX) > 4){
+					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
+					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
+					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
+					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
+					bossMov++;
+					if (bossMov == 5){
+						bossMovX++;
+						bossMov = 0;
+					}
+				}
+				
+			}
 
 			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
 				pu_laser_X=4+rand()%((w.ws_col-7)-4);
