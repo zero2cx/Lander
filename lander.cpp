@@ -21,7 +21,7 @@ struct rock_t {
 	int pos_Y;
 	bool isActive;
 	bool needsRock;
-} rocks[0];
+} rocks[256];
 
 int nDigits(int x) {
 	x = abs(x);
