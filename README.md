@@ -33,4 +33,4 @@ This can be configured in `config.h` before compiling.
 &emsp;
 
 ###KNOWN ISSUES
-* *When the terminal is wider than 191 columns; Segmantation fault*
+* *Laser changing color to red*
