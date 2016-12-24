@@ -5,4 +5,6 @@
 #define KEY_MOVE_RIGHT 'c'
 #define KEY_SHOOT 'x'
 
+#define debugGraph false
+
 #endif
