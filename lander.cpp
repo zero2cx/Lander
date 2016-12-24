@@ -21,7 +21,14 @@ struct rock_t {
 	int pos_Y;
 	bool isActive;
 	bool needsRock;
-} rocks[256], bossShoot[256];
+} rocks[256];
+
+struct boss_shoot{
+	int id;
+	int pos_X;
+	int pos_Y;
+	bool isActive;
+} bossShoot[256];
 
 int nDigits(int x) {
 	x = abs(x);
@@ -89,7 +96,6 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = false;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -156,62 +162,96 @@ int main() {
 					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
 					bossMov++;
 
-					if (bossMov == 5){
+					if (bossMov == 10){
 						bossMovX++;
 						bossMov = 0;
-						for(int i = bossShootID; i < bossShootID+2; i++) {
-							rock_t* r = &bossShoot[i];
-
-
-							if (r->pos_Y < 10){
-								r->pos_Y = 10;
-							}
-
-
-
-							if (r->pos_Y > w.ws_row) {
-								wtf += r->velocity;
-								destroyRock(i);
-								r->needsRock = 1;
-							}
-							if (r->isActive &&
-								(r->pos_Y == shoot_Y || r->pos_Y == shoot_Y + 1 || r->pos_Y == shoot_Y - 1) &&
-								(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
-								wtf += 2 * r->velocity;
-								destroyRock(i);
-								rocks[i].needsRock = 1;
-								shoot = false;
-								shoot_X = -10;
-								shoot_Y = -10;
-							}
-							if (r->needsRock == 1) {
-								r->pos_X = rand() % (w.ws_col - 7) + 4;
-								srand((time(0) * i) + time(0));
-								r->needsRock = 0;
-							}
-							if ((ship_X == r->pos_X || ship_X + 1 == r->pos_X || ship_X + 2 == r->pos_X)
-								&& (r->pos_Y > (w.ws_row - 3))) {
-								goto GOVER;
+						for (int i = 1; i <= 2; ++i){
+							for (int n = 0; n <= 256; ++n){
+								boss_shoot* r = &bossShoot[n];
+								if (!r->isActive){
+									r->isActive = true;
+									r->pos_Y = 9;
+									if (i == 1){
+										r->pos_X = w.ws_col/2-4-bossMovX+2;
+									} else {
+										r->pos_X = w.ws_col/2-4-bossMovX+6;
+									}
+									break;
+								}
 							}
 						}
 						bossShootID = bossShootID+2;
 					}
 
-				} else if ((w.ws_col/2-4-bossMovX) < w.ws_col-12){
+				} else if ((w.ws_col/2-4-bossMovX) < w.ws_col-12){			// TO RIGHT BOSS
 					fistStepBoss = false;
 					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
 					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
 					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
 					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
 					bossMov++;
-					if (bossMov == 5){
+					if (bossMov == 10){
 						bossMovX--;
 						bossMov = 0;
+												for (int i = 1; i <= 2; ++i){
+							for (int n = 0; n <= 256; ++n){
+								boss_shoot* r = &bossShoot[n];
+								if (!r->isActive){
+									r->isActive = true;
+									r->pos_Y = 9;
+									if (i == 1){
+										r->pos_X = w.ws_col/2-4-bossMovX+2;
+									} else {
+										r->pos_X = w.ws_col/2-4-bossMovX+6;
+									}
+									break;
+								}
+							}
+						}
 					}
 				} else {
 					fistStepBoss = true;
 				}
 				
+			}
+
+
+			int abcnum = 0;
+
+			for (int i = 0; i < 256; ++i){
+				boss_shoot* r = &bossShoot[i];
+				if (r->isActive){
+					abcnum++;
+				}
+			}
+
+			mvprintw(15,15,"abc : %d", abcnum);
+
+
+
+			for (int i = 0; i <= 256; ++i){					// BOSS SHOOTS MOVEMENT AND STANDARD OUTPUT
+				boss_shoot* r = &bossShoot[i];
+				if (r->isActive){
+					r->pos_Y++;
+					if (r->pos_Y > w.ws_row){
+						r->isActive = false;
+						r->pos_Y = -10;
+						r->pos_X = -10;
+					}
+					mvprintw(r->pos_Y,r->pos_X,"!");
+				}
+				if (r->isActive &&
+					(r->pos_Y == shoot_Y || r->pos_Y == shoot_Y + 1 || r->pos_Y == shoot_Y - 1) &&
+					(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
+					r->isActive = false;
+					shoot = false;
+					shoot_X = -10;
+					shoot_Y = -10;
+				}
+				if ((ship_X == r->pos_X || ship_X + 1 == r->pos_X || ship_X + 2 == r->pos_X)
+					&& (r->pos_Y > (w.ws_row - 3))) {
+					goto GOVER;
+				}
 			}
 
 			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
