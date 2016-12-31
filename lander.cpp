@@ -112,12 +112,13 @@ int main() {
 	int pu_laser_Y;
 	int laserCD = 0;
 	int restartLaser = 0;
+	int lsmv_counter = 0;
 	int bossStart = -5;
 	int bossMov = 0;
 	int bossMovX = 0;
 	int bossShootID = 0;
 	int bossShootCD = 7;
-	int bossHP = 20;
+	int bossHP = 30;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
 	bool fistStepBoss = true;
@@ -148,7 +149,7 @@ int main() {
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
-			if (second_time > 10 && bossAlive == true && bossHP > 0){			// TOP TO MID BOSS, i know, pretty stupid code, shut up
+			if (second_time > 60 && bossAlive == true && bossHP > 0){			// TOP TO MID BOSS, i know, pretty stupid code, shut up
 				for (int i = 0; i < bossHP; ++i){
 					mvprintw(1,15+i,"\u2580");
 				}
@@ -278,12 +279,16 @@ int main() {
 				laserCD=300;
 			}
 			if ( laserOnScreen ){               //LASER (POWERUP) MOVEMENT
-				++pu_laser_Y;
+				lsmv_counter++;
+				if (lsmv_counter == 2){
+					lsmv_counter = 0;
+					++pu_laser_Y;
+				}
 				mvprintw(pu_laser_Y,pu_laser_X,"Y");
 				if (pu_laser_Y==w.ws_row-3 && ( pu_laser_X == ship_X || pu_laser_X == ship_X+1 || pu_laser_X == ship_X+2 )){
 					laserOnScreen = false;
 					laserEnabled = true;
-					restartLaser=150;
+					restartLaser=200;
 				} else if (pu_laser_Y > w.ws_row){
 					laserOnScreen = false;
 					laserEnabled = false;
