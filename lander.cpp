@@ -132,7 +132,9 @@ int main() {
 	rocks[0].isActive = true;
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	start_color();
+	if (colorsEnabled == true){
+		start_color();
+	}
 	while(true) {
 		char key;
 		struct winsize w;
@@ -254,6 +256,10 @@ int main() {
 					(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
 					r->isActive = false;
 					bossHP--;
+					if (bossHP == 0){
+						score = score + 25000;
+						// BOSS DEAD ANIMATION HERE
+					}
 					shoot = false;
 					shoot_X = -10;
 					shoot_Y = -10;
