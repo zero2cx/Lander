@@ -112,14 +112,16 @@ int main() {
 	int pu_laser_Y;
 	int laserCD = 0;
 	int restartLaser = 0;
-	int bossCD = 0;
 	int bossStart = -5;
 	int bossMov = 0;
 	int bossMovX = 0;
 	int bossShootID = 0;
+	int bossShootCD = 7;
+	int bossHP = 20;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
 	bool fistStepBoss = true;
+	bool bossAlive = true;
 
 	for(int i = 0; i < w.ws_col; i++) {
 		createRock(i);
@@ -144,8 +146,11 @@ int main() {
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
-			if (second_time > 10 && bossCD <= 0){						// TOP TO MID BOSS, i know, pretty stupid code, shut up
-				if (bossStart<6){
+			if (second_time > 10 && bossAlive == true && bossHP > 0){			// TOP TO MID BOSS, i know, pretty stupid code, shut up
+				for (int i = 0; i < bossHP; ++i){
+					mvprintw(1,15+i,"\u2580");
+				}
+				if (bossStart<3){
 					mvprintw(bossStart, w.ws_col/2-4, "_________");
 					mvprintw(bossStart+1, w.ws_col/2-4, "\\ o-X-o /");
 					mvprintw(bossStart+2, w.ws_col/2-4, " \\|_ _|/");
@@ -162,25 +167,33 @@ int main() {
 					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
 					bossMov++;
 
-					if (bossMov == 10){
+					if (bossMov == 5){
+
 						bossMovX++;
 						bossMov = 0;
-						for (int i = 1; i <= 2; ++i){
-							for (int n = 0; n <= 256; ++n){
-								boss_shoot* r = &bossShoot[n];
-								if (!r->isActive){
-									r->isActive = true;
-									r->pos_Y = 9;
-									if (i == 1){
-										r->pos_X = w.ws_col/2-4-bossMovX+2;
-									} else {
-										r->pos_X = w.ws_col/2-4-bossMovX+6;
+						bossShootCD--;
+
+						if (bossShootCD <= 3){
+							for (int i = 1; i <= 2; ++i){
+								for (int n = 0; n <= 256; ++n){
+									boss_shoot* r = &bossShoot[n];
+									if (!r->isActive){
+										r->isActive = true;
+										r->pos_Y = 6;
+										if (i == 1){
+											r->pos_X = w.ws_col/2-4-bossMovX+2;
+										} else {
+											r->pos_X = w.ws_col/2-4-bossMovX+6;
+										}
+										break;
 									}
-									break;
+								}
+								if (bossShootCD <= 0){
+									bossShootCD = 7;
 								}
 							}
 						}
-						bossShootID = bossShootID+2;
+						bossShootID = bossShootID+2; // idk why this is here tbh
 					}
 
 				} else if ((w.ws_col/2-4-bossMovX) < w.ws_col-12){			// TO RIGHT BOSS
@@ -190,21 +203,30 @@ int main() {
 					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
 					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
 					bossMov++;
-					if (bossMov == 10){
+
+					if (bossMov == 5){
+
 						bossMovX--;
 						bossMov = 0;
-												for (int i = 1; i <= 2; ++i){
-							for (int n = 0; n <= 256; ++n){
-								boss_shoot* r = &bossShoot[n];
-								if (!r->isActive){
-									r->isActive = true;
-									r->pos_Y = 9;
-									if (i == 1){
-										r->pos_X = w.ws_col/2-4-bossMovX+2;
-									} else {
-										r->pos_X = w.ws_col/2-4-bossMovX+6;
+						bossShootCD--;
+
+						if (bossShootCD <= 3){
+							for (int i = 1; i <= 2; ++i){
+								for (int n = 0; n <= 256; ++n){
+									boss_shoot* r = &bossShoot[n];
+									if (!r->isActive){
+										r->isActive = true;
+										r->pos_Y = 6;
+										if (i == 1){
+											r->pos_X = w.ws_col/2-4-bossMovX+2;
+										} else {
+											r->pos_X = w.ws_col/2-4-bossMovX+6;
+										}
+										break;
 									}
-									break;
+								}
+								if (bossShootCD <= 0){
+									bossShootCD = 7;
 								}
 							}
 						}
@@ -214,19 +236,6 @@ int main() {
 				}
 				
 			}
-
-
-			int abcnum = 0;
-
-			for (int i = 0; i < 256; ++i){
-				boss_shoot* r = &bossShoot[i];
-				if (r->isActive){
-					abcnum++;
-				}
-			}
-
-			mvprintw(15,15,"abc : %d", abcnum);
-
 
 
 			for (int i = 0; i <= 256; ++i){					// BOSS SHOOTS MOVEMENT AND STANDARD OUTPUT
@@ -244,6 +253,7 @@ int main() {
 					(r->pos_Y == shoot_Y || r->pos_Y == shoot_Y + 1 || r->pos_Y == shoot_Y - 1) &&
 					(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
 					r->isActive = false;
+					bossHP--;
 					shoot = false;
 					shoot_X = -10;
 					shoot_Y = -10;
