@@ -117,7 +117,7 @@ int main() {
 	int bossMov = 0;
 	int bossMovX = 0;
 	int bossShootID = 0;
-	int bossShootCD = 7;
+	int bossShootCD = 10;
 	int bossHP = 30;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
@@ -149,7 +149,7 @@ int main() {
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
-			if (second_time > 60 && bossAlive == true && bossHP > 0){			// TOP TO MID BOSS, i know, pretty stupid code, shut up
+			if (second_time > 66 && bossAlive == true && bossHP > 0){			// TOP TO MID BOSS, i know, pretty stupid code, shut up
 				for (int i = 0; i < bossHP; ++i){
 					mvprintw(1,15+i,"\u2580");
 				}
@@ -192,7 +192,7 @@ int main() {
 									}
 								}
 								if (bossShootCD <= 0){
-									bossShootCD = 7;
+									bossShootCD = 10;
 								}
 							}
 						}
@@ -229,7 +229,7 @@ int main() {
 									}
 								}
 								if (bossShootCD <= 0){
-									bossShootCD = 7;
+									bossShootCD = 10;
 								}
 							}
 						}
@@ -241,7 +241,7 @@ int main() {
 			}
 
 
-			for (int i = 0; i <= 256; ++i){					// BOSS SHOOTS MOVEMENT AND STANDARD OUTPUT
+			for (int i = 0; i <= 256; ++i){					// BOSS SHOOTS MOVEMENT + HITBOXES + STDOUT
 				boss_shoot* r = &bossShoot[i];
 				if (r->isActive){
 					r->pos_Y++;
@@ -265,10 +265,27 @@ int main() {
 					shoot_X = -10;
 					shoot_Y = -10;
 				}
+				
 				if ((ship_X == r->pos_X || ship_X + 1 == r->pos_X || ship_X + 2 == r->pos_X)
 					&& (r->pos_Y > (w.ws_row - 3))) {
 					goto GOVER;
 				}
+			}
+
+			if ((bossStart == shoot_Y || bossStart+1 == shoot_Y || bossStart+2 == shoot_Y) &&
+				(w.ws_col/2-4-bossMovX == shoot_X || w.ws_col/2-4-bossMovX+1 == shoot_X ||
+				w.ws_col/2-4-bossMovX+2 == shoot_X || w.ws_col/2-4-bossMovX+3 == shoot_X ||
+				w.ws_col/2-4-bossMovX+4 == shoot_X || w.ws_col/2-4-bossMovX+5 == shoot_X ||
+				w.ws_col/2-4-bossMovX+6 == shoot_X || w.ws_col/2-4-bossMovX+7 == shoot_X ||
+				w.ws_col/2-4-bossMovX+8 == shoot_X)) {
+				bossHP=bossHP-5;
+				if (bossHP == 0){
+					score = score + 25000;
+					// BOSS DEAD ANIMATION HERE
+				}
+				shoot = false;
+				shoot_X = -10;
+				shoot_Y = -10;
 			}
 
 			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
