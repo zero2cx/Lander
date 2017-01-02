@@ -16,9 +16,10 @@ Main Contributors:
 ##DEPENDENCIES
 libncurses5-dev, g++, libncursesw5-dev
 
-Debian `sudo apt install g++ libncurses5-dev libncursesw5-dev`
-
-Arch `sudo pacman -S gcc`
+Distro | Command
+------------ | -------------
+Debian | `sudo apt install g++ libncurses5-dev libncursesw5-dev`
+Arch | `sudo pacman -S gcc`
 
 ##CONTROLS
 
@@ -33,4 +34,4 @@ This can be configured in `config.h` before compiling.
 &emsp;
 
 ###KNOWN ISSUES
-* *When the terminal is wider than 191 columns; Segmantation fault*
+* *Laser changing color to red*
