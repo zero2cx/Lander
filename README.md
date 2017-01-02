@@ -10,16 +10,16 @@ Main Contributors:
 
 * [MrWhiteGoat](https://github.com/MrWhiteGoat)
 * [Capuno](https://github.com/Capuno)
-* [Superchet](https://github.com/Superchet)
 
 
 ##DEPENDENCIES
-libncurses5-dev, g++, libncursesw5-dev
+> `libncurses5-dev`, `g++`, `libncursesw5-dev`
 
 Distro | Command
------------- | -------------
-Debian | `sudo apt install g++ libncurses5-dev libncursesw5-dev`
-Arch | `sudo pacman -S gcc`
+------------: | :-------------
+Debian & based | `sudo apt install g++ libncurses5-dev libncursesw5-dev`
+Arch & based | `sudo pacman -S gcc`
+
 
 ##CONTROLS
 
