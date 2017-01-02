@@ -35,3 +35,4 @@ This can be configured in `config.h` before compiling.
 
 ###KNOWN ISSUES
 * *Laser changing color to red*
+* *Console causes visual glitch*
