@@ -23,6 +23,14 @@ struct rock_t {
 	bool needsRock;
 } rocks[1280];
 
+struct boss_shoot{
+	int id;
+	int pos_X;
+	int pos_Y;
+	bool isActive;
+} bossShoot[256];
+
+
 int nDigits(int x) {
 	x = abs(x);
 	if (x > 0) {
@@ -89,7 +97,6 @@ int main() {
 	curs_set(0);
 	int ship_X = 15;
 	int loops = 0;
-	bool debugGraph = true;
 	int chKBHIT;
 	srand(time(0));
 	struct winsize w;
@@ -106,8 +113,17 @@ int main() {
 	int pu_laser_Y;
 	int laserCD = 0;
 	int restartLaser = 0;
+	int lsmv_counter = 0;
+	int bossStart = -5;
+	int bossMov = 0;
+	int bossMovX = 0;
+	int bossShootID = 0;
+	int bossShootCD = 10;
+	int bossHP = 30;
 	bool laserEnabled = false;
 	bool laserOnScreen = false;
+	bool fistStepBoss = true;
+	bool bossAlive = true;
 
 	for(int i = 0; i < w.ws_col; i++) {
 		createRock(i);
@@ -118,7 +134,9 @@ int main() {
 	rocks[0].isActive = true;
 	nodelay(stdscr, TRUE);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	start_color();
+	if (colorsEnabled == true){
+		start_color();
+	}
 	while(true) {
 		char key;
 		struct winsize w;
@@ -132,6 +150,145 @@ int main() {
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 			clear();
 
+			if (second_time > 66 && bossAlive == true && bossHP > 0){			// TOP TO MID BOSS, i know, pretty stupid code, shut up
+				for (int i = 0; i < bossHP; ++i){
+					mvprintw(1,15+i,"\u2580");
+				}
+				if (bossStart<3){
+					mvprintw(bossStart, w.ws_col/2-4, "_________");
+					mvprintw(bossStart+1, w.ws_col/2-4, "\\ o-X-o /");
+					mvprintw(bossStart+2, w.ws_col/2-4, " \\|_ _|/");
+					mvprintw(bossStart+3, w.ws_col/2-4, "  | V |");
+					bossMov++;
+					if (bossMov == 5){
+						bossStart++;
+						bossMov = 0;
+					}
+				} else if ((w.ws_col/2-4-bossMovX) > 4 && fistStepBoss){		// WHATEVER TO LEFT BOSS
+					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
+					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
+					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
+					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
+					bossMov++;
+
+					if (bossMov == 5){
+
+						bossMovX++;
+						bossMov = 0;
+						bossShootCD--;
+
+						if (bossShootCD <= 3){
+							for (int i = 1; i <= 2; ++i){
+								for (int n = 0; n <= 256; ++n){
+									boss_shoot* r = &bossShoot[n];
+									if (!r->isActive){
+										r->isActive = true;
+										r->pos_Y = 6;
+										if (i == 1){
+											r->pos_X = w.ws_col/2-4-bossMovX+2;
+										} else {
+											r->pos_X = w.ws_col/2-4-bossMovX+6;
+										}
+										break;
+									}
+								}
+								if (bossShootCD <= 0){
+									bossShootCD = 10;
+								}
+							}
+						}
+						bossShootID = bossShootID+2; // idk why this is here tbh
+					}
+
+				} else if ((w.ws_col/2-4-bossMovX) < w.ws_col-12){			// TO RIGHT BOSS
+					fistStepBoss = false;
+					mvprintw(bossStart, w.ws_col/2-4-bossMovX, "_________");
+					mvprintw(bossStart+1, w.ws_col/2-4-bossMovX, "\\ o-X-o /");
+					mvprintw(bossStart+2, w.ws_col/2-4-bossMovX, " \\|_ _|/");
+					mvprintw(bossStart+3, w.ws_col/2-4-bossMovX, "  | V |");
+					bossMov++;
+
+					if (bossMov == 5){
+
+						bossMovX--;
+						bossMov = 0;
+						bossShootCD--;
+
+						if (bossShootCD <= 3){
+							for (int i = 1; i <= 2; ++i){
+								for (int n = 0; n <= 256; ++n){
+									boss_shoot* r = &bossShoot[n];
+									if (!r->isActive){
+										r->isActive = true;
+										r->pos_Y = 6;
+										if (i == 1){
+											r->pos_X = w.ws_col/2-4-bossMovX+2;
+										} else {
+											r->pos_X = w.ws_col/2-4-bossMovX+6;
+										}
+										break;
+									}
+								}
+								if (bossShootCD <= 0){
+									bossShootCD = 10;
+								}
+							}
+						}
+					}
+				} else {
+					fistStepBoss = true;
+				}
+				
+			}
+
+
+			for (int i = 0; i <= 256; ++i){					// BOSS SHOOTS MOVEMENT + HITBOXES + STDOUT
+				boss_shoot* r = &bossShoot[i];
+				if (r->isActive){
+					r->pos_Y++;
+					if (r->pos_Y > w.ws_row){
+						r->isActive = false;
+						r->pos_Y = -10;
+						r->pos_X = -10;
+					}
+					mvprintw(r->pos_Y,r->pos_X,"!");
+				}
+				if (r->isActive &&
+					(r->pos_Y == shoot_Y || r->pos_Y == shoot_Y + 1 || r->pos_Y == shoot_Y - 1) &&
+					(r->pos_X == shoot_X || r->pos_X == shoot_X + 1 || r->pos_X == shoot_X + 2)) {
+					r->isActive = false;
+					bossHP--;
+					if (bossHP == 0){
+						score = score + 25000;
+						// BOSS DEAD ANIMATION HERE
+					}
+					shoot = false;
+					shoot_X = -10;
+					shoot_Y = -10;
+				}
+				
+				if ((ship_X == r->pos_X || ship_X + 1 == r->pos_X || ship_X + 2 == r->pos_X)
+					&& (r->pos_Y > (w.ws_row - 3))) {
+					goto GOVER;
+				}
+			}
+
+			if ((bossStart == shoot_Y || bossStart+1 == shoot_Y || bossStart+2 == shoot_Y) &&
+				(w.ws_col/2-4-bossMovX == shoot_X || w.ws_col/2-4-bossMovX+1 == shoot_X ||
+				w.ws_col/2-4-bossMovX+2 == shoot_X || w.ws_col/2-4-bossMovX+3 == shoot_X ||
+				w.ws_col/2-4-bossMovX+4 == shoot_X || w.ws_col/2-4-bossMovX+5 == shoot_X ||
+				w.ws_col/2-4-bossMovX+6 == shoot_X || w.ws_col/2-4-bossMovX+7 == shoot_X ||
+				w.ws_col/2-4-bossMovX+8 == shoot_X)) {
+				bossHP=bossHP-5;
+				if (bossHP == 0){
+					score = score + 25000;
+					// BOSS DEAD ANIMATION HERE
+				}
+				shoot = false;
+				shoot_X = -10;
+				shoot_Y = -10;
+			}
+
 			if ( second_time > 25 && laserCD <= 0 ){    //LASER (POWERUP) CREATION
 				pu_laser_X=4+rand()%((w.ws_col-7)-4);
 				pu_laser_Y=0;
@@ -140,12 +297,16 @@ int main() {
 				laserCD=300;
 			}
 			if ( laserOnScreen ){               //LASER (POWERUP) MOVEMENT
-				++pu_laser_Y;
+				lsmv_counter++;
+				if (lsmv_counter == 2){
+					lsmv_counter = 0;
+					++pu_laser_Y;
+				}
 				mvprintw(pu_laser_Y,pu_laser_X,"Y");
 				if (pu_laser_Y==w.ws_row-3 && ( pu_laser_X == ship_X || pu_laser_X == ship_X+1 || pu_laser_X == ship_X+2 )){
 					laserOnScreen = false;
 					laserEnabled = true;
-					restartLaser=150;
+					restartLaser=200;
 				} else if (pu_laser_Y > w.ws_row){
 					laserOnScreen = false;
 					laserEnabled = false;
