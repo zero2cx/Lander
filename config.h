@@ -5,7 +5,7 @@
 #define KEY_MOVE_RIGHT 'c'
 #define KEY_SHOOT 'x'
 
-#define debugGraph false		// CONSOLE (MAY CAUSE SOME GLITCHES)
+#define debugGraph false		// CONSOLE (CAUSES VISUAL GLITCHES)
 #define colorsEnabled true	  // COLORS
 
 #endif
